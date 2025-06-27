@@ -1,0 +1,10 @@
+{
+  "network": "localhost",
+  "timestamp": "2025-06-27T03:42:12.293Z",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "contracts": {
+    "token": "0xc9205abC4A4fceC25E15446A8c2DD19ab60e1149",
+    "badge": "0xA38062F23cbF30680De009e59E62B62F6c95a35A",
+    "fundingRound": "0xefBa1032bB5f9bEC79e022f52D89C2cc9090D1B8"
+  }
+}

@@ -1,0 +1,202 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      String   @default("MEMBER")
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile Profile?
+
+  // Relations
+  createdCampaigns Campaign[]     @relation("CampaignCreator")
+  donations        Donation[]
+  votes            Vote[]
+  helpRequests     HelpRequest[]  @relation("HelpRequestCreator")
+  assignedRequests HelpRequest[]  @relation("HelpRequestAssignee")
+  proposals        Proposal[]     @relation("ProposalCreator")
+  auctionBids      AuctionBid[]
+
+  @@map("users")
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  walletAddress String?  @unique
+  firstName     String?
+  lastName      String?
+  bio           String?
+  avatar        String?
+  location      String?
+  website       String?
+  twitter       String?
+  github        String?
+  linkedin      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model Campaign {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  target      Float
+  raised      Float     @default(0)
+  status      String    @default("ACTIVE")
+  category    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  endDate     DateTime?
+  
+  imageUrl        String?
+  tags            String?
+  location        String?
+  beneficiaryInfo String?
+  
+  creator     User        @relation("CampaignCreator", fields: [creatorId], references: [id])
+  creatorId   String
+  donations   Donation[]
+  milestones  Milestone[]
+  
+  @@map("campaigns")
+}
+
+model Milestone {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  targetAmount Float
+  status      String    @default("PENDING")
+  deadline    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
+  campaignId  String
+  
+  @@map("milestones")
+}
+
+model Donation {
+  id               String        @id @default(cuid())
+  amount           Float
+  currency         String        @default("ETH")
+  status           String        @default("PENDING")
+  transactionHash  String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  
+  donor       User     @relation(fields: [donorId], references: [id])
+  donorId     String
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
+  campaignId  String
+  
+  @@map("donations")
+}
+
+model HelpRequest {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  amount      Float
+  urgency     String    @default("MEDIUM")
+  status      String    @default("PENDING")
+  location    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  creator     User    @relation("HelpRequestCreator", fields: [creatorId], references: [id])
+  creatorId   String
+  assignee    User?   @relation("HelpRequestAssignee", fields: [assigneeId], references: [id])
+  assigneeId  String?
+  
+  @@map("help_requests")
+}
+
+model Proposal {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  type        String    @default("GOVERNANCE")
+  status      String    @default("ACTIVE")
+  votingEnds  DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  treasuryRecipient String?
+  treasuryAmount    Float?
+  
+  creator   User   @relation("ProposalCreator", fields: [creatorId], references: [id])
+  creatorId String
+  votes     Vote[]
+  
+  @@map("proposals")
+}
+
+model Vote {
+  id         String   @id @default(cuid())
+  choice     String
+  weight     Float
+  createdAt  DateTime @default(now())
+  
+  voter      User     @relation(fields: [voterId], references: [id])
+  voterId    String
+  proposal   Proposal @relation(fields: [proposalId], references: [id])
+  proposalId String
+  
+  @@unique([voterId, proposalId])
+  @@map("votes")
+}
+
+model Auction {
+  id          String      @id @default(cuid())
+  title       String
+  description String
+  imageUrl    String?
+  category    String
+  startPrice  Float
+  status      String      @default("ACTIVE")
+  startDate   DateTime    @default(now())
+  endDate     DateTime
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  finalPrice    Float?
+  winnerId      String?
+  
+  bids        AuctionBid[]
+  
+  @@map("auctions")
+}
+
+model AuctionBid {
+  id        String   @id @default(cuid())
+  amount    Float
+  createdAt DateTime @default(now())
+  
+  auction   Auction @relation(fields: [auctionId], references: [id])
+  auctionId String
+  bidder    User    @relation(fields: [bidderId], references: [id])
+  bidderId  String
+  
+  @@map("auction_bids")
+} 
