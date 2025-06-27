@@ -1,0 +1,60 @@
+{
+  "name": "impactchain-backend",
+  "version": "1.0.0",
+  "description": "AI × Blockchain Charity Platform Backend",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "test:e2e": "turbo test:e2e",
+    "clean": "turbo clean",
+    "prepare": "husky install",
+    "contracts:compile": "cd packages/contracts && npx hardhat compile",
+    "contracts:deploy:mumbai": "cd packages/contracts && npx hardhat run scripts/deploy.ts --network mumbai",
+    "contracts:deploy:polygon": "cd packages/contracts && npx hardhat run scripts/deploy.ts --network polygon",
+    "contracts:test": "cd packages/contracts && npx hardhat test",
+    "contracts:coverage": "cd packages/contracts && npx hardhat coverage",
+    "foundry:test": "cd packages/contracts && forge test",
+    "foundry:deploy": "cd packages/contracts && forge script script/Deploy.s.sol",
+    "db:migrate": "cd packages/services && npx prisma migrate deploy",
+    "db:generate": "cd packages/services && npx prisma generate",
+    "db:seed": "cd packages/services && npx prisma db seed"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0",
+    "turbo": "^1.11.2",
+    "typescript": "^5.3.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.12.0+sha512.279278f83be782f6faaefbacbccc503301c4ec2cdafd40983e7c26aeeee7c38270f5c8e635b43464691b897abe1675b40c06df6edadde922532b7368aa9a5267",
+  "lint-staged": {
+    "*.{ts,js,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}
