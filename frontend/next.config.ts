@@ -1,19 +1,35 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  trailingSlash: true,
-  skipTrailingSlashRedirect: true,
-  distDir: 'dist',
-  images: {
-    unoptimized: true,
+  experimental: {
+    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
-  eslint: {
-    ignoreDuringBuilds: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+    return config;
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig); 

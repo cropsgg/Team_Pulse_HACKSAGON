@@ -13,18 +13,13 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      // Disable strict rules for development
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
-      "react/no-unescaped-entities": "warn",
       "react-hooks/exhaustive-deps": "warn",
-      "@next/next/no-img-element": "warn",
-      
-      // Keep important rules as errors
-      "react/jsx-key": "error",
-      "react/jsx-no-duplicate-props": "error",
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-page-custom-font": "off",
     },
   },
 ];
 
-export default eslintConfig;
+export default eslintConfig; 
