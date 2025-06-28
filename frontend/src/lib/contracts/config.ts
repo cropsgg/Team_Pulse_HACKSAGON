@@ -12,7 +12,7 @@ import {
   ImpactGovernor__factory,
   ImpactTimelock__factory,
   ImpactToken__factory,
-} from '../../../../contracts/typechain-types';
+} from '../typechain-types';
 
 // Contract addresses for Base mainnet
 export const BASE_MAINNET_CONTRACTS = {
