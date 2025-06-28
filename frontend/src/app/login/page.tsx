@@ -223,6 +223,41 @@ export default function LoginPage() {
                 </Button>
               </div>
 
+              {/* Guest Login */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-gray-700" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">Or explore as guest</span>
+                </div>
+              </div>
+
+              <Button 
+                onClick={handleGuestLogin}
+                variant="secondary" 
+                className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-600" 
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Accessing as Guest...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <UserCheck className="h-4 w-4" />
+                    <span>Continue as Guest</span>
+                  </div>
+                )}
+              </Button>
+
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground bg-gray-800/30 px-3 py-2 rounded-lg">
+                  🎯 No registration required • Full access to explore projects and features
+                </p>
+              </div>
+
               {/* Sign Up Link */}
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">
