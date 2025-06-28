@@ -58,24 +58,58 @@ const queryClient = new QueryClient({
   },
 });
 
+// Fallback messages to prevent infinite loading
+const fallbackMessages = {
+  common: {
+    loading: "Loading...",
+    error: "Error",
+    success: "Success"
+  }
+};
+
 export function Providers({ children }: ProvidersProps) {
   const pathname = usePathname();
   const [locale, setLocale] = useState<Locale>(defaultLocale);
-  const [messages, setMessages] = useState<any>(null);
+  const [messages, setMessages] = useState<any>(fallbackMessages);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const currentLocale = getLocaleFromPath(pathname);
     setLocale(currentLocale);
     
-    loadMessages(currentLocale).then((loadedMessages) => {
+    // Add timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      console.warn('i18n loading timeout, using fallback messages');
+      setMessages(fallbackMessages);
+      setIsLoading(false);
+    }, 3000); // 3 second timeout
+
+    loadMessages(currentLocale)
+      .then((loadedMessages) => {
+        clearTimeout(timeoutId);
       setMessages(loadedMessages);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Failed to load i18n messages:', error);
+        clearTimeout(timeoutId);
+        setMessages(fallbackMessages);
       setIsLoading(false);
     });
+
+    return () => clearTimeout(timeoutId);
   }, [pathname]);
 
+  // Simplified loading state with fallback
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

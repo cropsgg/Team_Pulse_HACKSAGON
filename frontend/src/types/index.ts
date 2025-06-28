@@ -1,20 +1,15 @@
 // User and Authentication Types
 export interface User {
-  id: string;
-  address?: string;
-  email?: string;
+  id: string; // Wallet address
+  address: string;
   name: string;
-  avatar?: string;
-  bio?: string;
-  role: UserRole;
+  role: string[]; // Array of all roles
   verified: boolean;
-  createdAt: string;
-  updatedAt: string;
-  preferences: UserPreferences;
-  social?: SocialLinks;
-  kycStatus: KYCStatus;
+  isVerified: boolean;
+  walletAddress: string;
 }
 
+// Simplified enum - everyone gets all roles
 export enum UserRole {
   DONOR = 'DONOR',
   VC = 'VC',
@@ -22,42 +17,6 @@ export enum UserRole {
   NGO_ADMIN = 'NGO_ADMIN',
   ADMIN = 'ADMIN',
   VERIFIER = 'VERIFIER',
-}
-
-export enum KYCStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
-  NOT_STARTED = 'NOT_STARTED',
-}
-
-export interface UserPreferences {
-  theme: 'light' | 'dark' | 'system';
-  language: string;
-  currency: string;
-  notifications: NotificationSettings;
-  privacy: PrivacySettings;
-}
-
-export interface NotificationSettings {
-  email: boolean;
-  push: boolean;
-  milestones: boolean;
-  votes: boolean;
-  marketing: boolean;
-}
-
-export interface PrivacySettings {
-  showProfile: boolean;
-  showDonations: boolean;
-  showInvestments: boolean;
-}
-
-export interface SocialLinks {
-  twitter?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
 }
 
 // Project Types
@@ -198,7 +157,6 @@ export interface AIAnalysis {
   impactPrediction: number;
   recommendations: string[];
   concerns: string[];
-  summary: string;
   analyzedAt: string;
 }
 

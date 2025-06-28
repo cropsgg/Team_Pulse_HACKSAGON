@@ -64,13 +64,12 @@ export function Web3Provider({ children }: Web3ProviderProps) {
     }
   }, []);
 
-  // Show loading state during SSR or before client hydration
-  if (!isClient || !config) {
-    return <div>{children}</div>;
-  }
+  // Always wrap children in WagmiProvider, even with null config initially
+  // This prevents wagmi hooks from being called outside provider context
+  const defaultConfig = config || createWagmiConfig();
 
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={defaultConfig}>
       <ConnectKitProvider
         theme="auto"
         options={{
