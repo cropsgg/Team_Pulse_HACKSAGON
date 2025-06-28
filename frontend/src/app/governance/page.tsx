@@ -101,7 +101,7 @@ export default function GovernancePage() {
       <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container-wide flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 text-gray-200">
               <Sparkles className="h-5 w-5" />
             </div>
             <span className="font-bold text-xl">ImpactChain</span>
@@ -114,7 +114,7 @@ export default function GovernancePage() {
             <Link href="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               How it Works
             </Link>
-            <Link href="/governance" className="text-sm font-medium text-primary">
+            <Link href="/governance" className="text-sm font-medium text-foreground">
               Governance
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
@@ -165,8 +165,8 @@ export default function GovernancePage() {
               const Icon = stat.icon;
               return (
                 <Card key={index} className="text-center p-6">
-                  <Icon className="h-8 w-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                  <Icon className="h-8 w-8 text-foreground mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">{stat.value}</div>
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
                 </Card>
               );
@@ -187,11 +187,11 @@ export default function GovernancePage() {
             </div>
             <div className="grid md:grid-cols-4 gap-6">
               <div className="text-center">
-                <div className="text-xl font-bold text-primary">{votingPower.totalTokens}</div>
+                <div className="text-xl font-bold text-foreground">{votingPower.totalTokens}</div>
                 <div className="text-sm text-muted-foreground">Total Tokens</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-primary">{votingPower.votingPower}</div>
+                <div className="text-xl font-bold text-foreground">{votingPower.votingPower}</div>
                 <div className="text-sm text-muted-foreground">Voting Power</div>
               </div>
               <div className="text-center">
@@ -201,7 +201,7 @@ export default function GovernancePage() {
                 <div className="text-sm text-muted-foreground">Delegated To</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-primary">{votingPower.delegatedFrom}</div>
+                <div className="text-xl font-bold text-foreground">{votingPower.delegatedFrom}</div>
                 <div className="text-sm text-muted-foreground">Delegated From</div>
               </div>
             </div>
@@ -356,7 +356,7 @@ export default function GovernancePage() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="text-center p-6">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Vote className="h-8 w-8 text-primary" />
+                <Vote className="h-8 w-8 text-foreground" />
               </div>
               <h3 className="font-bold text-lg mb-2">Propose</h3>
               <p className="text-muted-foreground text-sm">
@@ -367,7 +367,7 @@ export default function GovernancePage() {
 
             <Card className="text-center p-6">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-primary" />
+                <Users className="h-8 w-8 text-foreground" />
               </div>
               <h3 className="font-bold text-lg mb-2">Discuss</h3>
               <p className="text-muted-foreground text-sm">
@@ -378,7 +378,7 @@ export default function GovernancePage() {
 
             <Card className="text-center p-6">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="h-8 w-8 text-primary" />
+                <CheckCircle className="h-8 w-8 text-foreground" />
               </div>
               <h3 className="font-bold text-lg mb-2">Execute</h3>
               <p className="text-muted-foreground text-sm">
