@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -17,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Upload, 
   X, 
-  Image as ImageIcon, 
+  ImageIcon, 
   FileText, 
   MapPin, 
   Calendar,
@@ -33,6 +33,12 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { useNGORegistry } from '@/hooks/contracts/useNGORegistry';
+import { useStartupRegistry } from '@/hooks/contracts/useStartupRegistry';
+import type { Address } from 'viem';
+import { useSwitchChain, useChainId } from 'wagmi';
+import { base, baseSepolia } from 'wagmi/chains';
+import { getContractAddresses } from '@/lib/contracts/config';
 
 // Define basic project categories as an enum
 enum ProjectCategory {
@@ -47,6 +53,27 @@ enum ProjectCategory {
   GREENTECH = 'greentech',
   OTHER = 'other',
 }
+
+// UN Sustainable Development Goals mapping
+const SDG_GOALS = {
+  1: 'No Poverty',
+  2: 'Zero Hunger',
+  3: 'Good Health and Well-being',
+  4: 'Quality Education',
+  5: 'Gender Equality',
+  6: 'Clean Water and Sanitation',
+  7: 'Affordable and Clean Energy',
+  8: 'Decent Work and Economic Growth',
+  9: 'Industry, Innovation and Infrastructure',
+  10: 'Reduced Inequalities',
+  11: 'Sustainable Cities and Communities',
+  12: 'Responsible Consumption and Production',
+  13: 'Climate Action',
+  14: 'Life Below Water',
+  15: 'Life on Land',
+  16: 'Peace, Justice and Strong Institutions',
+  17: 'Partnerships for the Goals',
+} as const;
 
 // Form validation schemas
 const baseProjectSchema = z.object({
@@ -83,10 +110,10 @@ const ngoSpecificSchema = baseProjectSchema.extend({
 });
 
 const startupSpecificSchema = baseProjectSchema.extend({
-  businessModel: z.string().min(20, 'Business model description is required'),
-  revenueModel: z.string().min(20, 'Revenue model description is required'),
-  marketSize: z.string().min(10, 'Market size information is required'),
-  competition: z.string().min(20, 'Competition analysis is required'),
+  businessModel: z.string().min(1, 'Business model is required'),
+  revenueModel: z.string().min(1, 'Revenue model is required'),
+  marketSize: z.string().min(1, 'Market size information is required'),
+  competition: z.string().min(1, 'Competition analysis is required'),
   fundingStage: z.enum(['pre-seed', 'seed', 'series-a', 'series-b', 'series-c', 'ipo']),
 });
 
@@ -120,6 +147,41 @@ export function ProjectCreationForm({
 
   // API and auth hooks
   const { user, isAuthenticated } = useAuth();
+  const { 
+    registerNGO, 
+    isLoading: isRegisteringNGO, 
+    txHash: ngoTxHash,
+    isConfirmed: ngoTxConfirmed,
+    isError: ngoTxError,
+    error: ngoError 
+  } = useNGORegistry();
+  const { 
+    registerStartup, 
+    isLoading: isRegisteringStartup,
+    txHash: startupTxHash,
+    isConfirmed: startupTxConfirmed,
+    isError: startupTxError,
+    error: startupError
+  } = useStartupRegistry();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+  
+  // Get contract addresses for current chain
+  const contracts = getContractAddresses(chainId);
+  
+  // Network validation
+  const isOnSupportedNetwork = chainId === base.id || chainId === baseSepolia.id;
+  const supportedNetworkName = chainId === base.id ? 'Base' : chainId === baseSepolia.id ? 'Base Sepolia' : 'Unknown';
+  
+  const switchToSupportedNetwork = async () => {
+    try {
+      await switchChain({ chainId: base.id }); // Switch to Base mainnet by default
+      toast.success('Switched to Base network');
+    } catch (error) {
+      console.error('Failed to switch network:', error);
+      toast.error('Failed to switch network. Please switch manually in your wallet.');
+    }
+  };
 
   const schema = projectType === 'ngo' ? ngoSpecificSchema : startupSpecificSchema;
 
@@ -143,39 +205,228 @@ export function ProjectCreationForm({
 
   const watchedValues = watch();
 
+  // Monitor NGO transaction confirmations
+  useEffect(() => {
+    if (ngoTxConfirmed && ngoTxHash) {
+      console.log('✅ NGO transaction confirmed:', ngoTxHash);
+      toast.dismiss('blockchain-tx');
+      
+      // Create clickable link to block explorer
+      const explorerUrl = getBlockExplorerUrl(ngoTxHash);
+      toast.success(
+        <>
+          🎉 NGO registered successfully on blockchain!
+          <br />
+          <a 
+            href={explorerUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
+          >
+            View Transaction: {ngoTxHash.slice(0, 10)}...{ngoTxHash.slice(-6)}
+          </a>
+        </>,
+        { duration: 10000 }
+      );
+      
+      // Update localStorage with confirmed transaction hash
+      const existingProjects = JSON.parse(localStorage.getItem('user-projects') || '[]');
+      const updatedProjects = existingProjects.map((project: any) => {
+        if (project.txHash === 'pending' && project.type === 'ngo') {
+          return { ...project, txHash: ngoTxHash, status: 'CONFIRMED' };
+        }
+        return project;
+      });
+      localStorage.setItem('user-projects', JSON.stringify(updatedProjects));
+    }
+    
+    if (ngoTxError && ngoError) {
+      console.error('❌ NGO transaction failed:', ngoError);
+      toast.dismiss('blockchain-tx');
+      toast.error(`NGO registration failed: ${ngoError}`);
+    }
+  }, [ngoTxConfirmed, ngoTxHash, ngoTxError, ngoError]);
+
+  // Monitor Startup transaction confirmations
+  useEffect(() => {
+    if (startupTxConfirmed && startupTxHash) {
+      console.log('✅ Startup transaction confirmed:', startupTxHash);
+      toast.dismiss('blockchain-tx');
+      
+      // Create clickable link to block explorer
+      const explorerUrl = getBlockExplorerUrl(startupTxHash);
+      toast.success(
+        <>
+          🎉 Startup registered successfully on blockchain!
+          <br />
+          <a 
+            href={explorerUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
+          >
+            View Transaction: {startupTxHash.slice(0, 10)}...{startupTxHash.slice(-6)}
+          </a>
+        </>,
+        { duration: 10000 }
+      );
+      
+      // Update localStorage with confirmed transaction hash
+      const existingProjects = JSON.parse(localStorage.getItem('user-projects') || '[]');
+      const updatedProjects = existingProjects.map((project: any) => {
+        if (project.txHash === 'pending' && project.type === 'startup') {
+          return { ...project, txHash: startupTxHash, status: 'CONFIRMED' };
+        }
+        return project;
+      });
+      localStorage.setItem('user-projects', JSON.stringify(updatedProjects));
+    }
+    
+    if (startupTxError && startupError) {
+      console.error('❌ Startup transaction failed:', startupError);
+      toast.dismiss('blockchain-tx');
+      toast.error(`Startup registration failed: ${startupError}`);
+    }
+  }, [startupTxConfirmed, startupTxHash, startupTxError, startupError]);
+
   // Multi-step form configuration
   const steps = [
     {
       title: 'Basic Information',
       description: 'Tell us about your project',
-      fields: ['title', 'shortDescription', 'description', 'category'],
+      requiredFields: ['title', 'shortDescription', 'description', 'category'],
     },
     {
       title: 'Organization Details',
       description: 'Information about your organization',
-      fields: ['organizationName', 'organizationDescription', 'website', 'socialLinks'],
+      requiredFields: ['organizationName', 'organizationDescription'],
     },
     {
       title: 'Funding & Location',
       description: 'Financial goals and location',
-      fields: ['fundingGoal', 'currency', 'minimumDonation', 'location'],
+      requiredFields: ['fundingGoal', 'currency', 'location.country'],
     },
     {
       title: 'Timeline & Specifics',
       description: projectType === 'ngo' ? 'Impact goals and timeline' : 'Business details and timeline',
-      fields: projectType === 'ngo' 
-        ? ['startDate', 'endDate', 'beneficiaryCount', 'sdgGoals']
-        : ['startDate', 'endDate', 'businessModel', 'revenueModel', 'marketSize', 'competition', 'fundingStage'],
+      requiredFields: projectType === 'ngo' 
+        ? ['startDate']
+        : ['startDate', 'businessModel', 'revenueModel', 'marketSize', 'competition', 'fundingStage'],
     },
     {
       title: 'Media & Documents',
       description: 'Upload images and supporting documents',
-      fields: ['images', 'documents'],
+      requiredFields: [], // No required fields for media upload
     },
   ];
 
-  const currentStepFields = steps[currentStep]?.fields || [];
+  const currentStepRequiredFields = steps[currentStep]?.requiredFields || [];
   const stepProgress = ((currentStep + 1) / steps.length) * 100;
+
+  // Improved validation function
+  const canProceedToNextStep = () => {
+    // Debug: Log current step and required fields
+    console.log('=== Step Validation Debug ===');
+    console.log('Current Step:', currentStep);
+    console.log('Project Type:', projectType);
+    console.log('Required Fields:', currentStepRequiredFields);
+    console.log('Current Form Values:', watchedValues);
+    console.log('Current Errors:', errors);
+
+    // Check if all required fields for current step are filled and valid
+    const allFieldsValid = currentStepRequiredFields.every(fieldPath => {
+      let fieldValue: any;
+      let hasError: any;
+      
+      // Handle all possible field paths explicitly
+      switch (fieldPath) {
+        case 'title':
+          fieldValue = watchedValues.title;
+          hasError = errors.title;
+          break;
+        case 'shortDescription':
+          fieldValue = watchedValues.shortDescription;
+          hasError = errors.shortDescription;
+          break;
+        case 'description':
+          fieldValue = watchedValues.description;
+          hasError = errors.description;
+          break;
+        case 'category':
+          fieldValue = watchedValues.category;
+          hasError = errors.category;
+          break;
+        case 'organizationName':
+          fieldValue = watchedValues.organizationName;
+          hasError = errors.organizationName;
+          break;
+        case 'organizationDescription':
+          fieldValue = watchedValues.organizationDescription;
+          hasError = errors.organizationDescription;
+          break;
+        case 'fundingGoal':
+          fieldValue = watchedValues.fundingGoal;
+          hasError = errors.fundingGoal;
+          break;
+        case 'currency':
+          fieldValue = watchedValues.currency;
+          hasError = errors.currency;
+          break;
+        case 'location.country':
+          fieldValue = watchedValues.location?.country;
+          hasError = errors.location?.country;
+          break;
+        case 'startDate':
+          fieldValue = watchedValues.startDate;
+          hasError = errors.startDate;
+          break;
+        case 'businessModel':
+          fieldValue = watchedValues.businessModel;
+          hasError = errors.businessModel;
+          break;
+        case 'revenueModel':
+          fieldValue = watchedValues.revenueModel;
+          hasError = errors.revenueModel;
+          break;
+        case 'marketSize':
+          fieldValue = watchedValues.marketSize;
+          hasError = errors.marketSize;
+          break;
+        case 'competition':
+          fieldValue = watchedValues.competition;
+          hasError = errors.competition;
+          break;
+        case 'fundingStage':
+          fieldValue = watchedValues.fundingStage;
+          hasError = errors.fundingStage;
+          break;
+        default:
+          console.warn(`Unknown field path: ${fieldPath}`);
+          fieldValue = '';
+          hasError = null;
+      }
+      
+      // Field validation
+      const isValid = fieldValue !== undefined && 
+                     fieldValue !== '' && 
+                     fieldValue !== null &&
+                     !hasError;
+
+      // Debug: Log each field validation
+      console.log(`Field "${fieldPath}":`, {
+        value: fieldValue,
+        hasError,
+        isValid
+      });
+
+      return isValid;
+    });
+
+    console.log('All Fields Valid:', allFieldsValid);
+    console.log('========================');
+
+    return allFieldsValid;
+  };
 
   // Image upload handler
   const onImageDrop = useCallback((acceptedFiles: File[]) => {
@@ -232,13 +483,6 @@ export function ProjectCreationForm({
     setUploadedDocuments(prev => prev.filter((_, i) => i !== index));
   };
 
-  const canProceedToNextStep = () => {
-    return currentStepFields.every(field => {
-      const value = watchedValues[field as keyof ProjectFormData];
-      return value !== undefined && value !== '' && !errors[field as keyof ProjectFormData];
-    });
-  };
-
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
@@ -257,19 +501,47 @@ export function ProjectCreationForm({
     return category;
   };
 
+  // Helper function to get block explorer URL
+  const getBlockExplorerUrl = (txHash: string) => {
+    if (chainId === base.id) {
+      return `https://basescan.org/tx/${txHash}`;
+    } else if (chainId === baseSepolia.id) {
+      return `https://sepolia.basescan.org/tx/${txHash}`;
+    }
+    return `https://basescan.org/tx/${txHash}`; // Default to Base mainnet
+  };
+
+  // IPFS upload placeholder function
+  const uploadToIPFS = async (data: any): Promise<string> => {
+    // In production, this would upload to IPFS and return the hash
+    // For now, we'll create a mock hash based on the data
+    const jsonString = JSON.stringify(data);
+    const mockHash = `Qm${btoa(jsonString).substring(0, 44)}`; // Mock IPFS hash
+    console.log('Mock IPFS upload:', mockHash, data);
+    return mockHash;
+  };
+
   const onSubmit = async (data: ProjectFormData) => {
+    console.log('🚀 Form submitted with data:', data);
+    
     if (!isAuthenticated || !user) {
       toast.error('Please connect your wallet to create a project');
       return;
     }
 
+    // Check if user is on supported network
+    if (!isOnSupportedNetwork) {
+      toast.error(`Please switch to Base or Base Sepolia network. Currently on: ${supportedNetworkName}`);
+      return;
+    }
+
+    console.log('✅ User authenticated:', user);
+    console.log('🌐 Network check passed. Chain ID:', chainId, 'Network:', supportedNetworkName);
     setIsSubmitting(true);
     
     try {
-      // Prepare project data for local storage
-      const projectData = {
-        id: `project-${Date.now()}`, // Generate simple ID
-        type: projectType,
+      // Prepare project data for IPFS
+      const projectMetadata = {
         title: data.title,
         description: data.description,
         shortDescription: data.shortDescription,
@@ -279,29 +551,14 @@ export function ProjectCreationForm({
         organizationDescription: data.organizationDescription,
         website: data.website,
         socialLinks: data.socialLinks,
-        fundingGoal: data.fundingGoal,
-        currency: data.currency,
-        minimumDonation: data.minimumDonation,
         location: data.location,
         startDate: data.startDate,
         endDate: data.endDate,
-        // Creator info from wallet
-        creator: {
-          id: user.id,
-          address: user.address,
-          name: user.name,
-        },
-        // Default values
-        currentFunding: 0,
-        status: 'ACTIVE',
-        verified: true,
-        createdAt: new Date().toISOString(),
-        // NGO specific fields
+        // Type-specific fields
         ...(projectType === 'ngo' && {
           beneficiaryCount: data.beneficiaryCount,
           sdgGoals: data.sdgGoals,
         }),
-        // Startup specific fields
         ...(projectType === 'startup' && {
           businessModel: data.businessModel,
           revenueModel: data.revenueModel,
@@ -309,33 +566,140 @@ export function ProjectCreationForm({
           competition: data.competition,
           fundingStage: data.fundingStage,
         }),
+        // Media metadata (actual files would be uploaded separately)
+        images: uploadedImages.map(img => ({ name: img.name, size: img.size, type: img.type })),
+        documents: uploadedDocuments.map(doc => ({ name: doc.name, size: doc.size, type: doc.type })),
+        creator: {
+          address: user.address,
+          name: user.name,
+        },
+        createdAt: new Date().toISOString(),
       };
 
-      // Store project in localStorage (simulating backend)
+      console.log('📦 Project metadata prepared:', projectMetadata);
+
+      // Upload project metadata to IPFS
+      console.log('📤 Uploading to IPFS...');
+      const projectHash = await uploadToIPFS(projectMetadata);
+      console.log('✅ IPFS upload complete, hash:', projectHash);
+
+      // Show transaction pending toast
+      toast.loading('Preparing blockchain transaction...', { id: 'blockchain-tx' });
+
+      // Register on blockchain
+      if (projectType === 'ngo') {
+        console.log('🏥 Registering NGO on blockchain...');
+        console.log('NGO Registration params:', {
+          profileHash: projectHash,
+          ngoAddress: user.address as Address,
+        });
+        console.log('Using NGO contract address:', contracts.NGORegistry);
+        console.log('Chain ID:', chainId, 'Network:', supportedNetworkName);
+        
+        // Submit NGO registration transaction
+        await registerNGO({
+          profileHash: projectHash,
+          ngoAddress: user.address as Address,
+        });
+        
+        console.log('✅ NGO registration transaction submitted');
+        
+        // The transaction hash will be available in ngoTxHash state
+        // Wait a moment for the state to update
+        setTimeout(() => {
+          if (ngoTxHash) {
+            toast.loading(`NGO Registration TX: ${ngoTxHash.slice(0, 10)}...${ngoTxHash.slice(-6)}`, { id: 'blockchain-tx' });
+          }
+        }, 1000);
+        
+      } else {
+        console.log('🚀 Registering Startup on blockchain...');
+        // For startups, we need additional data that would come from a separate flow
+        // For now, we'll use placeholder values
+        const mockEquityTokenAddress = '0x0000000000000000000000000000000000000000' as Address;
+        const targetFundingWei = BigInt(data.fundingGoal * 1e18); // Convert to wei
+        
+        console.log('Startup Registration params:', {
+          founder: user.address as Address,
+          valuationHash: projectHash,
+          equityToken: mockEquityTokenAddress,
+          targetFunding: targetFundingWei,
+        });
+        console.log('Using Startup contract address:', contracts.StartupRegistry);
+        console.log('Chain ID:', chainId, 'Network:', supportedNetworkName);
+        
+        // Submit Startup registration transaction
+        await registerStartup({
+          founder: user.address as Address,
+          valuationHash: projectHash,
+          equityToken: mockEquityTokenAddress,
+          targetFunding: targetFundingWei,
+        });
+        
+        console.log('✅ Startup registration transaction submitted');
+        
+        // The transaction hash will be available in startupTxHash state
+        // Wait a moment for the state to update
+        setTimeout(() => {
+          if (startupTxHash) {
+            toast.loading(`Startup Registration TX: ${startupTxHash.slice(0, 10)}...${startupTxHash.slice(-6)}`, { id: 'blockchain-tx' });
+          }
+        }, 1000);
+      }
+
+      // Dismiss loading toast
+      toast.dismiss('blockchain-tx');
+
+      // Store additional data locally for UI purposes (this will be replaced by indexing)
+      const localProjectData = {
+        id: `project-${Date.now()}`,
+        type: projectType,
+        ...projectMetadata,
+        txHash: 'pending', // Will be updated when transaction is confirmed
+        blockchainRegistered: true,
+        fundingGoal: data.fundingGoal,
+        currency: data.currency,
+        minimumDonation: data.minimumDonation,
+        currentFunding: 0,
+        status: 'PENDING', // Will be updated to 'CONFIRMED' when transaction is confirmed
+        verified: true,
+      };
+
       const existingProjects = JSON.parse(localStorage.getItem('user-projects') || '[]');
-      existingProjects.push(projectData);
+      existingProjects.push(localProjectData);
       localStorage.setItem('user-projects', JSON.stringify(existingProjects));
 
-      // Store images info (in real app, these would be uploaded to IPFS)
-      if (uploadedImages.length > 0) {
-        console.log('Images to be uploaded to IPFS:', uploadedImages.map(img => img.name));
-        // In production, upload to IPFS here
-      }
-
-      // Store documents info  
-      if (uploadedDocuments.length > 0) {
-        console.log('Documents to be uploaded:', uploadedDocuments.map(doc => doc.name));
-        // In production, upload documents here
-      }
-
-      toast.success(`${projectType === 'ngo' ? 'NGO project' : 'Startup'} created successfully! Your project is now live on the blockchain.`);
+      toast.success(
+        `🚀 ${projectType === 'ngo' ? 'NGO project' : 'Startup'} registration submitted to blockchain! 
+        Please wait for transaction confirmation...`,
+        { duration: 4000 }
+      );
+      
+      console.log('✅ Project creation initiated successfully');
       
       // Call success callback if provided
-      onSuccess?.(projectData);
+      onSuccess?.(localProjectData);
       
     } catch (error: any) {
-      console.error('Failed to create project:', error);
-      toast.error('Failed to create project. Please try again.');
+      console.error('❌ Failed to register project on blockchain:', error);
+      
+      // Dismiss any pending toasts
+      toast.dismiss('blockchain-tx');
+      
+      // Handle specific error types
+      let errorMessage = 'Failed to register project on blockchain. Please try again.';
+      
+      if (error.message?.includes('User rejected')) {
+        errorMessage = 'Transaction was rejected. Please try again if you want to create the project.';
+      } else if (error.message?.includes('insufficient funds')) {
+        errorMessage = 'Insufficient funds for transaction. Please add more ETH to your wallet for gas fees.';
+      } else if (error.message?.includes('network')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (error.code === 4001) {
+        errorMessage = 'Transaction was rejected by user.';
+      }
+      
+      toast.error(errorMessage, { duration: 6000 });
     } finally {
       setIsSubmitting(false);
     }
@@ -359,9 +723,31 @@ export function ProjectCreationForm({
                 Step {currentStep + 1} of {steps.length}: {steps[currentStep].description}
               </CardDescription>
             </div>
-            <Badge variant="outline" className="text-sm">
-              {Math.round(stepProgress)}% Complete
-            </Badge>
+            <div className="flex items-center gap-3">
+              {/* Network Status Indicator */}
+              {isOnSupportedNetwork ? (
+                <Badge variant="outline" className="text-green-600 border-green-600">
+                  ✓ {supportedNetworkName}
+                </Badge>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Badge variant="destructive" className="text-red-600">
+                    ⚠️ Wrong Network
+                  </Badge>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={switchToSupportedNetwork}
+                    className="text-xs"
+                  >
+                    Switch to Base
+                  </Button>
+                </div>
+              )}
+              <Badge variant="outline" className="text-sm">
+                {Math.round(stepProgress)}% Complete
+              </Badge>
+            </div>
           </div>
           <Progress value={stepProgress} className="mt-4" />
         </CardHeader>
@@ -662,13 +1048,50 @@ export function ProjectCreationForm({
                     <div>
                       <Label>UN Sustainable Development Goals</Label>
                       <p className="text-sm text-gray-500 mb-2">Select relevant SDGs (optional)</p>
-                      <div className="grid grid-cols-3 gap-2 max-h-32 overflow-y-auto">
-                        {Array.from({ length: 17 }, (_, i) => i + 1).map((goal) => (
-                          <Badge key={goal} variant="outline" className="text-xs">
-                            SDG {goal}
-                          </Badge>
-                        ))}
-                      </div>
+                      <Controller
+                        name="sdgGoals"
+                        control={control}
+                        render={({ field }) => {
+                          const selectedGoals = field.value || [];
+                          
+                          const toggleGoal = (goal: number) => {
+                            const newGoals = selectedGoals.includes(goal)
+                              ? selectedGoals.filter(g => g !== goal)
+                              : [...selectedGoals, goal];
+                            field.onChange(newGoals);
+                          };
+
+                                                     return (
+                             <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                               {Array.from({ length: 17 }, (_, i) => i + 1).map((goal) => {
+                                 const isSelected = selectedGoals.includes(goal);
+                                 const goalName = SDG_GOALS[goal as keyof typeof SDG_GOALS];
+                                 return (
+                                   <Badge
+                                     key={goal}
+                                     variant={isSelected ? "default" : "outline"}
+                                     className={`text-xs cursor-pointer transition-colors hover:opacity-80 p-2 justify-start text-left ${
+                                       isSelected 
+                                         ? 'bg-green-600 text-white border-green-600' 
+                                         : 'hover:bg-gray-100'
+                                     }`}
+                                     onClick={() => toggleGoal(goal)}
+                                     title={`SDG ${goal}: ${goalName}`}
+                                   >
+                                     <span className="font-medium">SDG {goal}</span>
+                                     <span className="ml-1 font-normal truncate">{goalName}</span>
+                                   </Badge>
+                                 );
+                               })}
+                             </div>
+                           );
+                        }}
+                      />
+                      {watchedValues.sdgGoals && watchedValues.sdgGoals.length > 0 && (
+                        <p className="text-sm text-green-600 mt-2">
+                          {watchedValues.sdgGoals.length} SDG{watchedValues.sdgGoals.length > 1 ? 's' : ''} selected
+                        </p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -682,8 +1105,11 @@ export function ProjectCreationForm({
                         id="businessModel"
                         {...register('businessModel')}
                         placeholder="Describe your business model and how you create value"
-                        className="min-h-24"
+                        className={`min-h-24 ${errors.businessModel ? 'border-red-500' : ''}`}
                       />
+                      {errors.businessModel && (
+                        <p className="text-sm text-red-500 mt-1">{errors.businessModel.message}</p>
+                      )}
                     </div>
 
                     <div>
@@ -692,8 +1118,11 @@ export function ProjectCreationForm({
                         id="revenueModel"
                         {...register('revenueModel')}
                         placeholder="Explain how your startup generates revenue"
-                        className="min-h-24"
+                        className={`min-h-24 ${errors.revenueModel ? 'border-red-500' : ''}`}
                       />
+                      {errors.revenueModel && (
+                        <p className="text-sm text-red-500 mt-1">{errors.revenueModel.message}</p>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -703,8 +1132,11 @@ export function ProjectCreationForm({
                           id="marketSize"
                           {...register('marketSize')}
                           placeholder="Total Addressable Market (TAM) and market opportunity"
-                          className="min-h-20"
+                          className={`min-h-20 ${errors.marketSize ? 'border-red-500' : ''}`}
                         />
+                        {errors.marketSize && (
+                          <p className="text-sm text-red-500 mt-1">{errors.marketSize.message}</p>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="competition">Competition Analysis *</Label>
@@ -712,8 +1144,11 @@ export function ProjectCreationForm({
                           id="competition"
                           {...register('competition')}
                           placeholder="Who are your competitors and how do you differentiate?"
-                          className="min-h-20"
+                          className={`min-h-20 ${errors.competition ? 'border-red-500' : ''}`}
                         />
+                        {errors.competition && (
+                          <p className="text-sm text-red-500 mt-1">{errors.competition.message}</p>
+                        )}
                       </div>
                     </div>
 
@@ -724,7 +1159,7 @@ export function ProjectCreationForm({
                         control={control}
                         render={({ field }) => (
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger>
+                            <SelectTrigger className={errors.fundingStage ? 'border-red-500' : ''}>
                               <SelectValue placeholder="Select funding stage" />
                             </SelectTrigger>
                             <SelectContent>
@@ -738,6 +1173,9 @@ export function ProjectCreationForm({
                           </Select>
                         )}
                       />
+                      {errors.fundingStage && (
+                        <p className="text-sm text-red-500 mt-1">{errors.fundingStage.message}</p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -807,9 +1245,17 @@ export function ProjectCreationForm({
                   
                   {/* Document Upload */}
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                    <div className="text-center">
+                    <div
+                      {...getDocumentRootProps()}
+                      className={`text-center cursor-pointer transition-colors ${
+                        isDocumentDragActive ? 'bg-blue-50 border-blue-300' : ''
+                      }`}
+                    >
+                      <input {...getDocumentInputProps()} />
                       <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                      <p className="text-sm">Drop documents here or click to browse</p>
+                      <p className="text-sm">
+                        {isDocumentDragActive ? 'Drop documents here' : 'Drop documents here or click to browse'}
+                      </p>
                       <p className="text-xs text-gray-500 mt-1">PDF, DOC, DOCX, TXT up to 10MB each (max 3 documents)</p>
                     </div>
                   </div>
@@ -882,13 +1328,39 @@ export function ProjectCreationForm({
                     <ChevronRight className="h-4 w-4 ml-2" />
                   </Button>
                 ) : (
-                  <Button
-                    type="submit"
-                    disabled={!isValid}
-                  >
-                    <Send className="h-4 w-4 mr-2" />
-                    Create Project
-                  </Button>
+                  <div>
+                    {/* Debug Info - Remove in production */}
+                    <div className="text-xs text-gray-500 mb-2">
+                      Debug: isValid={isValid.toString()}, isSubmitting={isSubmitting.toString()}, 
+                      isRegisteringNGO={isRegisteringNGO.toString()}, isRegisteringStartup={isRegisteringStartup.toString()},
+                      isOnSupportedNetwork={isOnSupportedNetwork.toString()}, chainId={chainId}
+                    </div>
+                    {!isOnSupportedNetwork ? (
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={switchToSupportedNetwork}
+                          className="text-orange-600 border-orange-600 hover:bg-orange-50"
+                        >
+                          Switch to Base Network
+                        </Button>
+                        <span className="text-sm text-gray-500">Required for blockchain transactions</span>
+                      </div>
+                    ) : (
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting || isRegisteringNGO || isRegisteringStartup}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        {isSubmitting || isRegisteringNGO || isRegisteringStartup 
+                          ? 'Registering on Blockchain...' 
+                          : 'Create Project'
+                        }
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

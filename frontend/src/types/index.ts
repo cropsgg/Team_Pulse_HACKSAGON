@@ -19,6 +19,13 @@ export enum UserRole {
   VERIFIER = 'VERIFIER',
 }
 
+export enum KYCStatus {
+  NOT_STARTED = 'NOT_STARTED',
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}
+
 // Project Types
 export interface Project {
   id: string;

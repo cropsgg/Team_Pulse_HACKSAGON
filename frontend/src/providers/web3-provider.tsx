@@ -17,7 +17,7 @@ const createWagmiConfig = () => {
   }
 
   wagmiConfig = createConfig({
-    chains: [base, baseSepolia],
+    chains: [baseSepolia], // Only Base Sepolia for testing
     connectors: [
       metaMask(),
       walletConnect({
@@ -37,8 +37,7 @@ const createWagmiConfig = () => {
       injected(),
     ],
     transports: {
-      [base.id]: http(),
-      [baseSepolia.id]: http(),
+      [baseSepolia.id]: http('https://sepolia.base.org'),
     },
     ssr: true,
   });
@@ -54,6 +53,7 @@ interface Web3ProviderProps {
 export function Web3Provider({ children }: Web3ProviderProps) {
   const [config, setConfig] = useState<any>(null);
   const [isClient, setIsClient] = useState(false);
+  const [hasTimedOut, setHasTimedOut] = useState(false);
 
   useEffect(() => {
     // Only initialize Web3 on the client side
@@ -62,7 +62,19 @@ export function Web3Provider({ children }: Web3ProviderProps) {
       const wagmiConfig = createWagmiConfig();
       setConfig(wagmiConfig);
     }
-  }, []);
+
+    // Add safety timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      console.warn('Web3Provider initialization timeout');
+      setHasTimedOut(true);
+      if (!config) {
+        const fallbackConfig = createWagmiConfig();
+        setConfig(fallbackConfig);
+      }
+    }, 3000); // 3 second timeout
+
+    return () => clearTimeout(timeoutId);
+  }, [config]);
 
   // Always wrap children in WagmiProvider, even with null config initially
   // This prevents wagmi hooks from being called outside provider context
@@ -75,7 +87,7 @@ export function Web3Provider({ children }: Web3ProviderProps) {
         options={{
           embedGoogleFonts: true,
           enforceSupportedChains: true,
-          initialChainId: base.id,
+          initialChainId: baseSepolia.id,
           hideBalance: false,
           hideTooltips: false,
           hideQuestionMarkCTA: false,

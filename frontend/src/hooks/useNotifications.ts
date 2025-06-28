@@ -96,13 +96,14 @@ export function useNotifications() {
 
   // Load settings from user preferences
   useEffect(() => {
-    if (user?.preferences?.notifications) {
-      const userNotificationSettings = user.preferences.notifications;
+    // Since our simplified User interface doesn't have preferences,
+    // we'll use default notification settings
+    if (user) {
       setSettings(prev => ({
         ...prev,
         enableInApp: true, // Always enabled for in-app
-        enablePush: userNotificationSettings.push,
-        enableEmail: userNotificationSettings.email,
+        enablePush: false, // Default to false
+        enableEmail: false, // Default to false
       }));
     }
   }, [user]);

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 import { parseUnits, formatEther } from 'viem';
 
 export interface TransactionState {
@@ -53,7 +53,10 @@ export function useTransaction(options: UseTransactionOptions = {}) {
         isConfirmed: true,
       }));
       
-      toast.success(options.successMessage || 'Transaction confirmed!');
+      toast({
+        title: "Transaction Confirmed!",
+        description: options.successMessage || 'Your transaction has been successfully confirmed on the blockchain.',
+      });
       options.onSuccess?.(state.txHash!);
     }
   }, [receipt, state.isConfirming, state.txHash, options]);
@@ -83,7 +86,11 @@ export function useTransaction(options: UseTransactionOptions = {}) {
       userFriendlyMessage = 'Transaction nonce error - please try again';
     }
 
-    toast.error(userFriendlyMessage);
+    toast({
+      title: "Transaction Failed",
+      description: userFriendlyMessage,
+      variant: "destructive"
+    });
     options.onError?.(errorMessage);
   }, [options]);
 
@@ -91,10 +98,11 @@ export function useTransaction(options: UseTransactionOptions = {}) {
   const execute = useCallback(async (
     transactionFn: () => Promise<`0x${string}`>,
     gasEstimationFn?: () => Promise<bigint>
-  ) => {
+  ): Promise<{ success: boolean; txHash?: string; error?: string }> => {
     if (!isConnected || !address) {
-      handleError('Please connect your wallet first');
-      return;
+      const errorMsg = 'Please connect your wallet first';
+      handleError(errorMsg);
+      return { success: false, error: errorMsg };
     }
 
     try {
@@ -128,12 +136,17 @@ export function useTransaction(options: UseTransactionOptions = {}) {
         txHash,
       }));
 
-      toast.loading('Transaction submitted - waiting for confirmation...', {
-        id: txHash,
+      toast({
+        title: "Transaction Submitted",
+        description: "Waiting for blockchain confirmation...",
       });
 
+      return { success: true, txHash };
+
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Transaction failed';
       handleError(error as Error);
+      return { success: false, error: errorMessage };
     }
   }, [isConnected, address, handleError]);
 

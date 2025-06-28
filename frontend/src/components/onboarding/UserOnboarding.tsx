@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { UserRole } from '@/lib/api/services/userService';
+import { UserRole } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -32,9 +32,7 @@ export function UserOnboarding({ onComplete, onSkip }: UserOnboardingProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [formData, setFormData] = useState({
     name: user?.name || '',
-    bio: user?.bio || '',
-    email: user?.email || '',
-    selectedRole: userRole,
+    selectedRole: (userRole && userRole.length > 0) ? userRole[0] as UserRole : UserRole.DONOR,
     website: '',
     twitter: '',
     linkedin: '',
@@ -88,7 +86,7 @@ export function UserOnboarding({ onComplete, onSkip }: UserOnboardingProps) {
                 ? 'ring-2 ring-primary bg-primary/5' 
                 : 'hover:bg-accent'
             }`}
-            onClick={() => setFormData(prev => ({ ...prev, selectedRole: role }))}
+            onClick={() => setFormData(prev => ({ ...prev, selectedRole: role as UserRole }))}
           >
             <CardHeader className="pb-3">
               <div className="flex items-center gap-3">
@@ -99,7 +97,7 @@ export function UserOnboarding({ onComplete, onSkip }: UserOnboardingProps) {
                   <CardTitle className="text-base">{title}</CardTitle>
                   <CardDescription className="text-sm">{description}</CardDescription>
                 </div>
-                {formData.selectedRole === role && (
+                {formData.selectedRole === (role as UserRole) && (
                   <CheckCircle className="w-5 h-5 text-primary ml-auto" />
                 )}
               </div>

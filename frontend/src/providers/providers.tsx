@@ -82,7 +82,7 @@ export function Providers({ children }: ProvidersProps) {
       console.warn('i18n loading timeout, using fallback messages');
       setMessages(fallbackMessages);
       setIsLoading(false);
-    }, 3000); // 3 second timeout
+    }, 2000); // Reduced to 2 seconds for faster fallback
 
     loadMessages(currentLocale)
       .then((loadedMessages) => {

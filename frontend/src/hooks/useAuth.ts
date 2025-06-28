@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
 
@@ -17,6 +17,21 @@ interface SimpleUser {
 
 export function useAuth() {
   const { address, isConnected, isConnecting } = useAccount();
+  const [hasTimedOut, setHasTimedOut] = useState(false);
+
+  // Add timeout to prevent infinite loading
+  useEffect(() => {
+    if (isConnecting) {
+      const timeoutId = setTimeout(() => {
+        console.warn('Wallet connection timeout, stopping loading state');
+        setHasTimedOut(true);
+      }, 5000); // 5 second timeout
+
+      return () => clearTimeout(timeoutId);
+    } else {
+      setHasTimedOut(false);
+    }
+  }, [isConnecting]);
 
   // Create user object directly from wallet address
   const user = useMemo((): SimpleUser | null => {
@@ -47,11 +62,16 @@ export function useAuth() {
     return isConnected && !!address;
   }, [isConnected, address]);
 
+  // Improved loading state with timeout
+  const isLoading = useMemo(() => {
+    return isConnecting && !hasTimedOut;
+  }, [isConnecting, hasTimedOut]);
+
   return {
     // State
     user,
     isAuthenticated,
-    isLoading: isConnecting,
+    isLoading,
     isConnected,
     address,
     backendAvailable: true, // Always assume backend available

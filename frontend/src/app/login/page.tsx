@@ -61,10 +61,13 @@ export default function LoginPage() {
     // Create guest user object
     const guestUser = {
       id: 'guest-' + Date.now(),
+      address: '0x0000000000000000000000000000000000000000', // Guest wallet address
       name: 'Guest User',
       email: 'guest@example.com',
-      role: UserRole.DONOR,
+      role: [UserRole.DONOR], // Array of roles as per User interface
       verified: false,
+      isVerified: false,
+      walletAddress: '0x0000000000000000000000000000000000000000',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       preferences: {
