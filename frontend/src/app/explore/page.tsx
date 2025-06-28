@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -60,6 +61,8 @@ const filters = {
 };
 
 export default function ExplorePage() {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen">
       <Helmet>
@@ -93,11 +96,11 @@ export default function ExplorePage() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Sign In</Link>
+            <Button variant="ghost" size="sm" onClick={() => router.push('/login')}>
+              Sign In
             </Button>
-            <Button size="sm" asChild>
-              <Link href="/create/startup">Create Project</Link>
+            <Button size="sm" onClick={() => router.push('/create/startup')}>
+              Create Project
             </Button>
           </div>
         </div>
@@ -236,11 +239,11 @@ export default function ExplorePage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
-                    <Button size="sm" className="flex-1" asChild>
-                      <Link href={`/project/${project.slug}`}>Support Now</Link>
+                    <Button size="sm" className="flex-1" onClick={() => router.push(`/project/${project.slug}`)}>
+                      Support Now
                     </Button>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/project/${project.slug}`}>View Details</Link>
+                    <Button variant="outline" size="sm" onClick={() => router.push(`/project/${project.slug}`)}>
+                      View Details
                     </Button>
                   </div>
                 </CardContent>
