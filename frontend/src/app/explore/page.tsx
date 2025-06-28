@@ -239,14 +239,10 @@ export default function ExplorePage() {
                   {/* Action Buttons */}
                   <div className="flex gap-2">
                     <Button size="sm" className="flex-1" asChild>
-                      <Link href={`/project/${project.slug}`}>
-                        Support Now
-                      </Link>
+                      <Link href={`/project/${project.slug}`}>Support Now</Link>
                     </Button>
                     <Button variant="outline" size="sm" asChild>
-                      <Link href={`/project/${project.slug}`}>
-                        View Details
-                      </Link>
+                      <Link href={`/project/${project.slug}`}>View Details</Link>
                     </Button>
                   </div>
                 </CardContent>
