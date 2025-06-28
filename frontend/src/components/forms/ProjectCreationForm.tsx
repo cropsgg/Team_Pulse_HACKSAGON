@@ -170,16 +170,16 @@ export function ProjectCreationForm({
   const contracts = getContractAddresses(chainId);
   
   // Network validation
-  const isOnSupportedNetwork = chainId === base.id || chainId === baseSepolia.id;
-  const supportedNetworkName = chainId === base.id ? 'Base' : chainId === baseSepolia.id ? 'Base Sepolia' : 'Unknown';
+  const isOnSupportedNetwork = chainId === baseSepolia.id;
+  const supportedNetworkName = chainId === baseSepolia.id ? 'Base Sepolia' : 'Unknown';
   
   const switchToSupportedNetwork = async () => {
     try {
-      await switchChain({ chainId: base.id }); // Switch to Base mainnet by default
-      toast.success('Switched to Base network');
+      await switchChain({ chainId: baseSepolia.id }); // Switch to Base Sepolia for testing
+      toast.success('Switched to Base Sepolia network');
     } catch (error) {
       console.error('Failed to switch network:', error);
-      toast.error('Failed to switch network. Please switch manually in your wallet.');
+      toast.error('Failed to switch network. Please switch manually to Base Sepolia in your wallet.');
     }
   };
 
@@ -531,11 +531,32 @@ export function ProjectCreationForm({
 
     // Check if user is on supported network
     if (!isOnSupportedNetwork) {
-      toast.error(`Please switch to Base or Base Sepolia network. Currently on: ${supportedNetworkName}`);
+      toast.error(`Please switch to Base Sepolia network. Currently on: ${supportedNetworkName}`);
       return;
     }
 
+    // Basic validation check
+    const requiredFields = ['title', 'description', 'organizationName', 'fundingGoal'];
+    const missingFields = requiredFields.filter(field => !data[field as keyof ProjectFormData]);
+    
+    if (missingFields.length > 0) {
+      toast.error(`Please fill in required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+
+    // Additional startup-specific validation
+    if (projectType === 'startup') {
+      const startupFields = ['businessModel', 'revenueModel', 'marketSize', 'competition', 'fundingStage'];
+      const missingStartupFields = startupFields.filter(field => !data[field as keyof ProjectFormData]);
+      
+      if (missingStartupFields.length > 0) {
+        toast.error(`Please fill in required startup fields: ${missingStartupFields.join(', ')}`);
+        return;
+      }
+    }
+
     console.log('✅ User authenticated:', user);
+    console.log('✅ Validation passed');
     console.log('🌐 Network check passed. Chain ID:', chainId, 'Network:', supportedNetworkName);
     setIsSubmitting(true);
     
@@ -701,7 +722,34 @@ export function ProjectCreationForm({
       
       toast.error(errorMessage, { duration: 6000 });
     } finally {
+      // Always reset loading state
       setIsSubmitting(false);
+      toast.dismiss('blockchain-tx');
+    }
+
+    // Store project locally for now (with pending blockchain status)
+    const localProject = {
+      id: Date.now().toString(),
+      ...data,
+      type: projectType,
+      creator: user,
+      createdAt: new Date().toISOString(),
+      status: 'PENDING_BLOCKCHAIN',
+      txHash: 'pending',
+      images: uploadedImages.map(img => ({ name: img.name, size: img.size, type: img.type })),
+      documents: uploadedDocuments.map(doc => ({ name: doc.name, size: doc.size, type: doc.type })),
+    };
+
+    // Store in localStorage
+    const existingProjects = JSON.parse(localStorage.getItem('user-projects') || '[]');
+    existingProjects.push(localProject);
+    localStorage.setItem('user-projects', JSON.stringify(existingProjects));
+
+    console.log('💾 Project stored locally:', localProject);
+
+    // Call success callback
+    if (onSuccess) {
+      onSuccess(localProject);
     }
   };
 
@@ -753,7 +801,17 @@ export function ProjectCreationForm({
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
+            <div className="relative">
+              {/* Debug Panel */}
+              <div className="mb-4 p-3 bg-gray-100 rounded text-xs text-gray-600">
+                <strong>Form Debug Info:</strong> Step {currentStep + 1}/{steps.length} | 
+                Authenticated: {isAuthenticated.toString()} | 
+                Network: {supportedNetworkName} | 
+                Submitting: {isSubmitting.toString()}
+              </div>
+            </div>
+
             {/* Step 1: Basic Information */}
             {currentStep === 0 && (
               <div className="space-y-4">
@@ -1331,7 +1389,7 @@ export function ProjectCreationForm({
                   <div>
                     {/* Debug Info - Remove in production */}
                     <div className="text-xs text-gray-500 mb-2">
-                      Debug: isValid={isValid.toString()}, isSubmitting={isSubmitting.toString()}, 
+                      Debug: isAuthenticated={isAuthenticated.toString()}, isSubmitting={isSubmitting.toString()}, 
                       isRegisteringNGO={isRegisteringNGO.toString()}, isRegisteringStartup={isRegisteringStartup.toString()},
                       isOnSupportedNetwork={isOnSupportedNetwork.toString()}, chainId={chainId}
                     </div>
@@ -1343,22 +1401,48 @@ export function ProjectCreationForm({
                           onClick={switchToSupportedNetwork}
                           className="text-orange-600 border-orange-600 hover:bg-orange-50"
                         >
-                          Switch to Base Network
+                          Switch to Base Sepolia Network
                         </Button>
                         <span className="text-sm text-gray-500">Required for blockchain transactions</span>
                       </div>
                     ) : (
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting || isRegisteringNGO || isRegisteringStartup}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        <Send className="h-4 w-4 mr-2" />
-                        {isSubmitting || isRegisteringNGO || isRegisteringStartup 
-                          ? 'Registering on Blockchain...' 
-                          : 'Create Project'
-                        }
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          type="submit"
+                          disabled={isSubmitting || isRegisteringNGO || isRegisteringStartup || !isAuthenticated}
+                          className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400"
+                        >
+                          <Send className="h-4 w-4 mr-2" />
+                          {isSubmitting || isRegisteringNGO || isRegisteringStartup 
+                            ? 'Registering on Blockchain...' 
+                            : 'Create Project'
+                          }
+                        </Button>
+                        
+                        {/* Test button for debugging */}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={async () => {
+                            console.log('🧪 Test submit clicked');
+                            console.log('Current form values:', watchedValues);
+                            console.log('Form errors:', errors);
+                            console.log('Is authenticated:', isAuthenticated);
+                            console.log('User:', user);
+                            console.log('Network supported:', isOnSupportedNetwork);
+                            
+                            // Try a minimal submit
+                            if (isAuthenticated && user) {
+                              toast.success('Test validation passed! Form should be working.');
+                            } else {
+                              toast.error('Authentication issue detected.');
+                            }
+                          }}
+                          className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                        >
+                          Test Submit
+                        </Button>
+                      </div>
                     )}
                   </div>
                 )}

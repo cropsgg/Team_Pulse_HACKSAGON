@@ -1,15 +1,73 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProjectCreationForm } from '@/components/forms';
 import { ProtectedRoute } from '@/components/auth';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Rocket, TrendingUp, DollarSign } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { ArrowLeft, Rocket, TrendingUp, DollarSign, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useChainId, useSwitchChain, useAccount } from 'wagmi';
+import { baseSepolia } from 'wagmi/chains';
+import { useStartupRegistry } from '@/hooks/contracts/useStartupRegistry';
+import type { Address } from 'viem';
 
 export default function CreateStartupPage() {
   const router = useRouter();
+  const { isConnected, address } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+  const { registerStartup, isLoading: isRegistering } = useStartupRegistry();
+
+  // Network validation
+  const isOnBaseSepolia = chainId === baseSepolia.id;
+
+  const handleSwitchToBaseSepolia = async () => {
+    if (!isConnected) {
+      toast.error('Please connect your wallet first.');
+      return;
+    }
+
+    try {
+      await switchChain({ chainId: baseSepolia.id });
+      toast.success('Switched to Base Sepolia network');
+    } catch (error) {
+      console.error('Failed to switch network:', error);
+      toast.error('Failed to switch network. Please switch manually to Base Sepolia in your wallet.');
+    }
+  };
+
+  const testStartupRegistration = async () => {
+    if (!isConnected || !address) {
+      toast.error('Please connect your wallet first.');
+      return;
+    }
+
+    if (!isOnBaseSepolia) {
+      toast.error('Please switch to Base Sepolia network first.');
+      return;
+    }
+
+    try {
+      const result = await registerStartup({
+        founder: address as Address,
+        valuationHash: `test-startup-${Date.now()}`,
+        equityToken: '0x0000000000000000000000000000000000000000' as Address,
+        targetFunding: BigInt(100000 * 1e18), // 100,000 ETH target
+      });
+
+      if (result?.success) {
+        toast.success(
+          `Test startup registered successfully! Transaction: ${result.txHash?.slice(0, 10)}...`,
+          { duration: 10000 }
+        );
+      }
+    } catch (error) {
+      console.error('Startup registration test failed:', error);
+      toast.error('Test registration failed. Please try again.');
+    }
+  };
 
   const handleSuccess = (project: any) => {
     toast.success('Startup project created successfully!');
@@ -19,6 +77,11 @@ export default function CreateStartupPage() {
 
   const handleCancel = () => {
     router.back();
+  };
+
+  const fillTemplateData = () => {
+    toast.success('Template feature coming soon! For now, please fill out the form manually.');
+    // In a full implementation, this would pass template data to the ProjectCreationForm
   };
 
   return (
@@ -60,11 +123,68 @@ export default function CreateStartupPage() {
         {/* Content */}
         <div className="container-wide py-8">
           <div className="max-w-4xl mx-auto">
+            {/* Network Warning */}
+            {isConnected && !isOnBaseSepolia && (
+              <Card className="mb-6 border-red-500/30 bg-red-500/10">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
+                      <div>
+                        <h3 className="font-semibold text-red-500">Wrong Network Detected</h3>
+                        <p className="text-sm text-red-300 mt-1">
+                          You're connected to the wrong network. Please switch to <strong>Base Sepolia</strong> to register your startup on the blockchain.
+                        </p>
+                        <p className="text-xs text-red-400 mt-1">
+                          Current network: {chainId === 8453 ? 'Base Mainnet' : `Chain ID ${chainId}`}
+                        </p>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                      onClick={handleSwitchToBaseSepolia}
+                    >
+                      Switch to Base Sepolia
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Base Sepolia Ready Banner */}
+            {isConnected && isOnBaseSepolia && (
+              <Card className="mb-6 border-green-500/30 bg-green-500/10">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-3 w-3 bg-green-500 rounded-full animate-pulse"></div>
+                      <div>
+                        <h3 className="font-semibold text-green-600">Ready for Blockchain Registration! 🚀</h3>
+                        <p className="text-sm text-green-700 mt-1">
+                          You're connected to Base Sepolia testnet. Your startup registration will be recorded on the blockchain.
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-green-500/30 text-green-600 hover:bg-green-500/10"
+                      onClick={testStartupRegistration}
+                      disabled={isRegistering}
+                    >
+                      {isRegistering ? 'Testing...' : 'Test Registration'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Info Banner */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
               <div className="flex items-start gap-3">
                 <Rocket className="h-5 w-5 text-blue-600 mt-0.5" />
-                <div>
+                <div className="flex-1">
                   <h3 className="font-medium text-blue-900">Creating a Startup Project</h3>
                   <p className="text-sm text-blue-700 mt-1">
                     Your startup will be reviewed by our investment committee. 
@@ -72,6 +192,14 @@ export default function CreateStartupPage() {
                     Provide comprehensive business information for the best results.
                   </p>
                 </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-blue-500/30 text-blue-600 hover:bg-blue-50"
+                  onClick={fillTemplateData}
+                >
+                  Use Template
+                </Button>
               </div>
             </div>
 

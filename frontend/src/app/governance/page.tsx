@@ -312,9 +312,9 @@ export default function GovernancePage() {
   const votingPowerDisplay = {
     totalTokens: userVotingPower?.toString() || '0',
     votingPower: userVotingPower?.toString() || '0',
-    delegatedTo: null,
-    delegatedFrom: 0
-  };
+  delegatedTo: null,
+  delegatedFrom: 0
+};
 
   const { switchChain } = useSwitchChain();
 
@@ -486,9 +486,9 @@ export default function GovernancePage() {
               </p>
             </div>
             <div className="flex gap-2">
-              <Link href="/create/proposal">
-                <Button className="bg-gray-800 hover:bg-gray-700 text-white">Create Proposal</Button>
-              </Link>
+            <Link href="/create/proposal">
+              <Button className="bg-gray-800 hover:bg-gray-700 text-white">Create Proposal</Button>
+            </Link>
               <Button 
                 variant="outline" 
                 className="border-green-500/30 text-green-400 hover:bg-green-500/10"
@@ -649,87 +649,87 @@ Timestamp: ${new Date().toISOString()}`;
                   )}
                   
                   <Card className="p-6 bg-gray-800/30 border-gray-700">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <Badge variant="outline" className="border-gray-600 text-gray-300">{proposal.category}</Badge>
-                          <Badge variant="outline" className={`${getStatusColor(proposal.status)} text-white border-gray-600`}>
-                            {getStatusIcon(proposal.status)}
-                            <span className="ml-1 capitalize">{proposal.status}</span>
-                          </Badge>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Badge variant="outline" className="border-gray-600 text-gray-300">{proposal.category}</Badge>
+                        <Badge variant="outline" className={`${getStatusColor(proposal.status)} text-white border-gray-600`}>
+                          {getStatusIcon(proposal.status)}
+                          <span className="ml-1 capitalize">{proposal.status}</span>
+                        </Badge>
                           {isDemoProposal && (
                             <Badge variant="outline" className="border-blue-500/30 text-blue-400">
                               Demo
                             </Badge>
                           )}
-                          {proposal.status === 'active' && (
-                            <Badge variant="secondary" className="bg-gray-700 text-gray-300">
-                              <Clock className="h-3 w-3 mr-1" />
-                              {proposal.timeLeft} left
-                            </Badge>
-                          )}
-                        </div>
-                        <h3 className="text-xl font-bold mb-2 text-white">{proposal.title}</h3>
-                        <p className="text-gray-400 mb-4">{proposal.description}</p>
-                        <div className="text-sm text-gray-500">
-                          Proposed by {proposal.author} • {proposal.created}
-                        </div>
+                        {proposal.status === 'active' && (
+                          <Badge variant="secondary" className="bg-gray-700 text-gray-300">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {proposal.timeLeft} left
+                          </Badge>
+                        )}
+                      </div>
+                      <h3 className="text-xl font-bold mb-2 text-white">{proposal.title}</h3>
+                      <p className="text-gray-400 mb-4">{proposal.description}</p>
+                      <div className="text-sm text-gray-500">
+                        Proposed by {proposal.author} • {proposal.created}
                       </div>
                     </div>
+                  </div>
 
-                    {/* Voting Progress */}
-                    <div className="mb-6">
-                      <div className="flex justify-between text-sm mb-2 text-gray-300">
-                        <span>Voting Progress</span>
-                        <span>{totalVotes} / {proposal.minVotes} votes</span>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
-                        <div 
-                          className="bg-gradient-to-r from-gray-500 to-gray-400 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.min((totalVotes / proposal.minVotes) * 100, 100)}%` }}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-4 text-sm">
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-2">
-                            <ThumbsUp className="h-4 w-4 text-gray-400" />
-                            <span className="text-gray-300">For</span>
-                          </span>
-                          <span className="font-medium text-white">{proposal.votes.for} ({forPercentage.toFixed(1)}%)</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-2">
-                            <ThumbsDown className="h-4 w-4 text-gray-400" />
-                            <span className="text-gray-300">Against</span>
-                          </span>
-                          <span className="font-medium text-white">{proposal.votes.against} ({againstPercentage.toFixed(1)}%)</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-2">
-                            <Eye className="h-4 w-4 text-gray-400" />
-                            <span className="text-gray-300">Abstain</span>
-                          </span>
-                          <span className="font-medium text-white">{proposal.votes.abstain} ({abstainPercentage.toFixed(1)}%)</span>
-                        </div>
-                      </div>
+                  {/* Voting Progress */}
+                  <div className="mb-6">
+                    <div className="flex justify-between text-sm mb-2 text-gray-300">
+                      <span>Voting Progress</span>
+                      <span>{totalVotes} / {proposal.minVotes} votes</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
+                      <div 
+                        className="bg-gradient-to-r from-gray-500 to-gray-400 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min((totalVotes / proposal.minVotes) * 100, 100)}%` }}
+                      />
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700">
-                          <MessageCircle className="h-4 w-4 mr-2" />
-                          Discuss
-                        </Button>
-                        <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700">
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Button>
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <ThumbsUp className="h-4 w-4 text-gray-400" />
+                          <span className="text-gray-300">For</span>
+                        </span>
+                        <span className="font-medium text-white">{proposal.votes.for} ({forPercentage.toFixed(1)}%)</span>
                       </div>
-                      
-                      {proposal.status === 'active' && (
-                        <div className="flex gap-2">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <ThumbsDown className="h-4 w-4 text-gray-400" />
+                          <span className="text-gray-300">Against</span>
+                        </span>
+                        <span className="font-medium text-white">{proposal.votes.against} ({againstPercentage.toFixed(1)}%)</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <Eye className="h-4 w-4 text-gray-400" />
+                          <span className="text-gray-300">Abstain</span>
+                        </span>
+                        <span className="font-medium text-white">{proposal.votes.abstain} ({abstainPercentage.toFixed(1)}%)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Discuss
+                      </Button>
+                      <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
+                      </Button>
+                    </div>
+                    
+                    {proposal.status === 'active' && (
+                      <div className="flex gap-2">
                           {!isConnected ? (
                             <Button size="sm" variant="outline" className="border-gray-600 text-gray-300" disabled>
                               Connect Wallet to Vote
@@ -752,8 +752,8 @@ Timestamp: ${new Date().toISOString()}`;
                                 ) : (
                                   <ThumbsDown className="h-4 w-4 mr-2" />
                                 )}
-                                Vote Against
-                              </Button>
+                          Vote Against
+                        </Button>
                               <Button 
                                 size="sm" 
                                 className="bg-gray-600 hover:bg-gray-500 text-white"
@@ -765,8 +765,8 @@ Timestamp: ${new Date().toISOString()}`;
                                 ) : (
                                   <ThumbsUp className="h-4 w-4 mr-2" />
                                 )}
-                                Vote For
-                              </Button>
+                          Vote For
+                        </Button>
                               <Button 
                                 size="sm" 
                                 variant="outline"
@@ -879,10 +879,10 @@ Timestamp: ${new Date().toISOString()}`;
                               </Dialog>
                             </>
                           )}
-                        </div>
-                      )}
-                    </div>
-                  </Card>
+                      </div>
+                    )}
+                  </div>
+                </Card>
                 </div>
               );
             })}
