@@ -145,7 +145,7 @@ export default function HowItWorksPage() {
       <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container-wide flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 text-gray-200">
               <Sparkles className="h-5 w-5" />
             </div>
             <span className="font-bold text-xl">ImpactChain</span>
@@ -155,7 +155,7 @@ export default function HowItWorksPage() {
             <Link href="/explore" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Explore
             </Link>
-            <Link href="/how-it-works" className="text-sm font-medium text-primary">
+            <Link href="/how-it-works" className="text-sm font-medium text-foreground">
               How it Works
             </Link>
             <Link href="/governance" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
@@ -277,8 +277,8 @@ export default function HowItWorksPage() {
               const Icon = benefit.icon;
               return (
                 <Card key={index} className="text-center p-6">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <Icon className="h-8 w-8 text-primary" />
+                  <div className="w-16 h-16 rounded-full bg-gray-800/30 flex items-center justify-center mx-auto mb-4">
+                    <Icon className="h-8 w-8 text-gray-400" />
                   </div>
                   <h3 className="font-bold text-lg mb-2">{benefit.title}</h3>
                   <p className="text-muted-foreground text-sm mb-4">{benefit.description}</p>
