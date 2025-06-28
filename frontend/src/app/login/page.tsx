@@ -21,8 +21,13 @@ import {
   UserCheck
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
+import { UserRole, KYCStatus } from '@/types';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -53,13 +58,40 @@ export default function LoginPage() {
   const handleGuestLogin = () => {
     setIsLoading(true);
     
+    // Create guest user object
+    const guestUser = {
+      id: 'guest-' + Date.now(),
+      name: 'Guest User',
+      email: 'guest@example.com',
+      role: UserRole.DONOR,
+      verified: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      preferences: {
+        theme: 'dark' as const,
+        language: 'en',
+        currency: 'USD',
+        notifications: {
+          email: false,
+          push: false,
+          milestones: true,
+          votes: true,
+          marketing: false
+        },
+        privacy: {
+          showProfile: false,
+          showDonations: false,
+          showInvestments: false
+        }
+      },
+      kycStatus: KYCStatus.NOT_STARTED
+    };
+    
     // Simulate guest login
     setTimeout(() => {
       setIsLoading(false);
-      console.log('Guest login successful');
-      // In a real app, you would set guest user state here
-      // For now, redirect to dashboard
-      window.location.href = '/dashboard';
+      login(guestUser);
+      router.push('/dashboard');
     }, 1000);
   };
 
@@ -69,36 +101,6 @@ export default function LoginPage() {
         <title>Sign In - ImpactChain</title>
         <meta name="description" content="Sign in to your ImpactChain account to access funding opportunities and governance features." />
       </Helmet>
-
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container-wide flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <span className="font-bold text-xl">ImpactChain</span>
-          </Link>
-          
-          <div className="hidden md:flex items-center space-x-6">
-            <Link href="/explore" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Explore
-            </Link>
-            <Link href="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              How it Works
-            </Link>
-            <Link href="/governance" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Governance
-            </Link>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <Link href="/signup">
-              <Button variant="outline" size="sm">Sign Up</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
 
       {/* Main Content */}
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-6">

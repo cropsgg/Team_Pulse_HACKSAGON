@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { 
   Menu, 
   X, 
@@ -18,11 +18,16 @@ import {
   Heart,
   TrendingUp,
   Globe,
-  BookOpen
+  BookOpen,
+  Bell,
+  Wallet,
+  ChevronDown,
+  Sparkles,
+  UserCheck
 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Avatar } from '@/components/ui/avatar';
 import { useAuthStore } from '@/store/authStore';
 
 const navigationItems = [
@@ -106,18 +111,117 @@ const supportItems = [
     href: '/csr',
     icon: Globe,
     description: 'Corporate partnerships'
-  },
-  {
-    title: 'Blog',
-    href: '/blog',
-    icon: BookOpen,
-    description: 'Latest news & insights'
   }
 ];
 
+// Desktop Header Component
+export function Header() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { user, isAuthenticated, logout } = useAuthStore();
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container-wide flex h-16 items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <span className="font-bold text-xl">ImpactChain</span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-6">
+          <Link 
+            href="/explore" 
+            className={`text-sm font-medium transition-colors ${
+              pathname === '/explore' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Explore
+          </Link>
+          <Link 
+            href="/how-it-works" 
+            className={`text-sm font-medium transition-colors ${
+              pathname === '/how-it-works' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            How it Works
+          </Link>
+          <Link 
+            href="/governance" 
+            className={`text-sm font-medium transition-colors ${
+              pathname === '/governance' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            Governance
+          </Link>
+          {isAuthenticated && (
+            <Link 
+              href="/dashboard" 
+              className={`text-sm font-medium transition-colors ${
+                pathname === '/dashboard' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Dashboard
+            </Link>
+          )}
+        </nav>
+
+        {/* Desktop Actions */}
+        <div className="hidden md:flex items-center space-x-3">
+          {isAuthenticated ? (
+            <>
+              <Button variant="ghost" size="sm" onClick={() => router.push('/notifications')}>
+                <Bell className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => router.push('/wallet')}>
+                <Wallet className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => router.push('/create/startup')}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Project
+              </Button>
+              <div className="flex items-center space-x-2">
+                {user?.name && (
+                  <span className="text-sm text-muted-foreground">
+                    {user.name}
+                  </span>
+                )}
+                <Avatar className="h-8 w-8 cursor-pointer" onClick={() => router.push('/dashboard')}>
+                  <div className="h-full w-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm">
+                    {user?.name?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                </Avatar>
+              </div>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" onClick={() => router.push('/login')}>
+                Sign In
+              </Button>
+              <Button size="sm" onClick={() => router.push('/create/startup')}>
+                Create Project
+              </Button>
+            </>
+          )}
+        </div>
+
+        {/* Mobile Menu */}
+        <div className="md:hidden">
+          <MobileNav />
+        </div>
+      </div>
+    </header>
+  );
+}
+
+// Mobile Navigation Component
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
 
   const handleLinkClick = () => {
@@ -147,7 +251,7 @@ export function MobileNav() {
           <div className="flex items-center justify-between pb-4 border-b">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">IC</span>
+                <Sparkles className="text-white h-4 w-4" />
               </div>
               <div>
                 <div className="font-semibold text-sm">ImpactChain</div>
@@ -169,9 +273,14 @@ export function MobileNav() {
                   <div className="font-medium text-sm truncate">{user.name || 'User'}</div>
                   <div className="text-xs text-muted-foreground truncate">{user.email}</div>
                   <div className="flex items-center space-x-1 mt-1">
-                    <Badge variant="secondary" className="text-xs">
-                      {user.role}
-                    </Badge>
+                    <div className="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">
+                      {user.id?.startsWith('guest-') ? 'Guest User' : (user.role || 'User')}
+                    </div>
+                    {user.id?.startsWith('guest-') && (
+                      <div className="inline-flex items-center rounded-full border border-orange-200 bg-orange-100 text-orange-800 px-2.5 py-0.5 text-xs font-semibold">
+                        🎯 Exploring
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -322,21 +431,34 @@ export function MobileNav() {
           {/* Footer Actions */}
           <div className="border-t pt-4 space-y-2">
             {isAuthenticated ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="w-full justify-start"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
+              <div className="space-y-2">
+                {user?.id?.startsWith('guest-') && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => { router.push('/signup'); handleLinkClick(); }}
+                    className="w-full justify-start bg-primary hover:bg-primary/90"
+                  >
+                    <UserCheck className="h-4 w-4 mr-2" />
+                    Create Full Account
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="w-full justify-start"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  {user?.id?.startsWith('guest-') ? 'Exit Guest Mode' : 'Sign Out'}
+                </Button>
+              </div>
             ) : (
               <div className="space-y-2">
-                <Button size="sm" className="w-full">
+                <Button size="sm" className="w-full" onClick={() => { router.push('/create/startup'); handleLinkClick(); }}>
                   Connect Wallet
                 </Button>
-                <Button variant="outline" size="sm" className="w-full">
+                <Button variant="outline" size="sm" className="w-full" onClick={() => { router.push('/login'); handleLinkClick(); }}>
                   Sign In
                 </Button>
               </div>

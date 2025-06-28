@@ -1,14 +1,10 @@
 'use client';
 
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/providers/providers';
 import { Toaster } from '@/components/ui/toaster';
-import { MobileNav } from '@/components/mobile-nav';
-import { SupportBot } from '@/components/support-bot';
+import { Header } from '@/components/Header';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({
   children,
@@ -25,7 +21,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className="antialiased">
         <HelmetProvider>
           <Helmet>
             <title>ImpactChain & CharityChain - AI-Powered Decentralized Blockchain DAO</title>
@@ -52,7 +48,7 @@ export default function RootLayout({
           </Helmet>
           
           <Providers>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-background flex flex-col">
               {/* Skip to main content for accessibility */}
               <a
                 href="#main-content"
@@ -61,18 +57,13 @@ export default function RootLayout({
                 Skip to main content
               </a>
               
-              {/* Mobile Navigation */}
-              <div className="md:hidden fixed top-4 left-4 z-50">
-                <MobileNav />
-              </div>
+              {/* Header Navigation */}
+              <Header />
 
               {/* Main Content */}
-              <main id="main-content" className="relative">
+              <main id="main-content" className="flex-1">
                 {children}
               </main>
-
-              {/* Support Bot */}
-              <SupportBot />
 
               {/* Toast Notifications */}
               <Toaster />

@@ -141,41 +141,6 @@ const benefits = [
 export default function HowItWorksPage() {
   return (
     <main className="min-h-screen">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container-wide flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 text-gray-200">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <span className="font-bold text-xl">ImpactChain</span>
-          </Link>
-          
-          <div className="hidden md:flex items-center space-x-6">
-            <Link href="/explore" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Explore
-            </Link>
-            <Link href="/how-it-works" className="text-sm font-medium text-foreground">
-              How it Works
-            </Link>
-            <Link href="/governance" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Governance
-            </Link>
-            <Link href="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Dashboard
-            </Link>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <Link href="/login">
-              <Button variant="ghost" size="sm">Sign In</Button>
-            </Link>
-            <Link href="/create/startup">
-              <Button size="sm">Create Project</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
 
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
