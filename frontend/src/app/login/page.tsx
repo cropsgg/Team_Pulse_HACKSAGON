@@ -17,7 +17,8 @@ import {
   Chrome,
   Sparkles,
   Shield,
-  Zap
+  Zap,
+  UserCheck
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -47,6 +48,19 @@ export default function LoginPage() {
       setIsLoading(false);
       console.log('Login attempt:', formData);
     }, 2000);
+  };
+
+  const handleGuestLogin = () => {
+    setIsLoading(true);
+    
+    // Simulate guest login
+    setTimeout(() => {
+      setIsLoading(false);
+      console.log('Guest login successful');
+      // In a real app, you would set guest user state here
+      // For now, redirect to dashboard
+      window.location.href = '/dashboard';
+    }, 1000);
   };
 
   return (
