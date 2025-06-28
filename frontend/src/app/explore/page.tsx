@@ -190,9 +190,7 @@ export default function ExplorePage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <CardTitle className="text-lg line-clamp-2 hover:text-primary transition-colors">
-                        <Link href={`/project/${project.slug}`}>
-                          {project.title}
-                        </Link>
+                        <Link href={`/project/${project.slug}`}>{project.title}</Link>
                       </CardTitle>
                       <p className="text-sm text-muted-foreground mt-1">
                         by {project.creator.name}
