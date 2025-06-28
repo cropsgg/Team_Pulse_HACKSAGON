@@ -25,44 +25,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-gray-950">
       {/* Navigation */}
-      <nav className="nav-modern">
-        <div className="container-modern flex h-20 items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-800 border border-gray-700">
-              <Sparkles className="h-6 w-6 text-gray-300" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-xl text-gray-100">ImpactChain</span>
-              <span className="text-xs text-gray-400 font-medium">Powered by AI & Blockchain</span>
-            </div>
-          </div>
-          
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/explore" className="text-sm font-semibold text-gray-300 hover:text-gray-100 transition-colors">
-              Explore Projects
-            </Link>
-            <Link href="/how-it-works" className="text-sm font-semibold text-gray-300 hover:text-gray-100 transition-colors">
-              How it Works
-            </Link>
-            <Link href="/dashboard" className="text-sm font-semibold text-gray-300 hover:text-gray-100 transition-colors">
-              Dashboard
-            </Link>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="btn-ghost">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/explore">
-              <Button size="sm" className="btn-primary">
-                Get Started
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      
 
       {/* Hero Section */}
       <section className="section-hero text-gray-100 relative">

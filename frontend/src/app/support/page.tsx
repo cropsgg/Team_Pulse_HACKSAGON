@@ -7,8 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SupportBot } from '@/components/support-bot';
-
 
 const faqCategories = [
   {
@@ -352,7 +350,26 @@ export default function SupportPage() {
             {/* Live Chat Tab */}
             <TabsContent value="chat" className="mt-8">
               <div className="max-w-4xl mx-auto">
-                <SupportBot inline className="h-[600px]" />
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <MessageCircle className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-2xl font-semibold mb-4">Contact Our Support Team</h3>
+                    <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                      Our support team is available to help you with any questions or issues. 
+                      Reach out through email or create a support ticket for personalized assistance.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <Button size="lg">
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Create Support Ticket
+                      </Button>
+                      <Button variant="outline" size="lg">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Email Support
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
           </Tabs>

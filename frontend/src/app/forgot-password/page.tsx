@@ -42,39 +42,6 @@ export default function ForgotPasswordPage() {
         <meta name="description" content="Reset your ImpactChain account password securely." />
       </Helmet>
 
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container-wide flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <span className="font-bold text-xl">ImpactChain</span>
-          </Link>
-          
-          <div className="hidden md:flex items-center space-x-6">
-            <Link href="/explore" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Explore
-            </Link>
-            <Link href="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              How it Works
-            </Link>
-            <Link href="/governance" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Governance
-            </Link>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <Link href="/login">
-              <Button variant="outline" size="sm">Sign In</Button>
-            </Link>
-            <Link href="/signup">
-              <Button size="sm">Sign Up</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
-
       {/* Main Content */}
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-6">
         <div className="w-full max-w-md space-y-6">
