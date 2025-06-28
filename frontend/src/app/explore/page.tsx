@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { Metadata } from 'next';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,11 +22,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { projects } from '@/data/mock';
-
-export const metadata: Metadata = {
-  title: 'Explore Projects - ImpactChain & CharityChain',
-  description: 'Discover and support innovative startups, charitable causes, and individuals in need through our transparent blockchain platform.',
-};
+import { ProjectType } from '@/types';
 
 const categories = [
   { id: 'all', name: 'All Projects', icon: Globe, count: 234 },
@@ -64,6 +62,11 @@ const filters = {
 export default function ExplorePage() {
   return (
     <main className="min-h-screen">
+      <Helmet>
+        <title>Explore Projects - ImpactChain & CharityChain</title>
+        <meta name="description" content="Discover innovative startups, impactful charities, and individuals in need. Support causes that matter to you through transparent blockchain funding." />
+      </Helmet>
+      
       {/* Navigation */}
       <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container-wide flex h-16 items-center justify-between">
@@ -155,89 +158,101 @@ export default function ExplorePage() {
 
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.slice(0, 9).map((project) => (
-            <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 group">
-              <div className="aspect-video bg-gradient-to-br from-primary/10 to-purple-500/10 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute top-3 left-3">
-                  <Badge variant={project.type === 'startup' ? 'default' : project.type === 'charity' ? 'secondary' : 'outline'}>
-                    {project.type === 'startup' ? 'Startup' : project.type === 'charity' ? 'Charity' : 'Personal'}
-                  </Badge>
-                </div>
-                <div className="absolute top-3 right-3">
-                  <Badge variant="outline" className="bg-background/80 backdrop-blur">
-                    <Star className="h-3 w-3 mr-1 text-yellow-500 fill-current" />
-                    {project.rating}
-                  </Badge>
-                </div>
-              </div>
-              
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg line-clamp-2 hover:text-primary transition-colors">
-                      <Link href={`/project/${project.slug}`}>
-                        {project.title}
-                      </Link>
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      by {project.organization}
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="pt-0">
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                  {project.description}
-                </p>
-
-                {/* Funding Progress */}
-                <div className="mb-4">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="font-medium">₹{project.raised.toLocaleString()}</span>
-                    <span className="text-muted-foreground">₹{project.goal.toLocaleString()}</span>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-2">
-                    <div 
-                      className="bg-primary h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.min((project.raised / project.goal) * 100, 100)}%` }}
+          {projects.slice(0, 9).map((project) => {
+            const fundingProgress = Math.round((project.currentFunding / project.fundingGoal) * 100);
+            const daysLeft = Math.max(0, Math.ceil((new Date(project.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+            
+            return (
+              <Card key={project.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 group">
+                <div className="aspect-video bg-gradient-to-br from-primary/10 to-purple-500/10 relative overflow-hidden">
+                  {project.coverImage && (
+                    <img 
+                      src={project.coverImage} 
+                      alt={project.title}
+                      className="w-full h-full object-cover"
                     />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute top-3 left-3">
+                    <Badge variant={project.type === ProjectType.STARTUP ? 'default' : project.type === ProjectType.CHARITY ? 'secondary' : 'outline'}>
+                      {project.type === ProjectType.STARTUP ? 'Startup' : project.type === ProjectType.CHARITY ? 'Charity' : 'Personal'}
+                    </Badge>
                   </div>
-                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                    <span>{Math.round((project.raised / project.goal) * 100)}% funded</span>
-                    <span>{project.daysLeft} days left</span>
+                  <div className="absolute top-3 right-3">
+                    <Badge variant="outline" className="bg-background/80 backdrop-blur">
+                      <Star className="h-3 w-3 mr-1 text-yellow-500 fill-current" />
+                      {project.aiScore}
+                    </Badge>
                   </div>
                 </div>
+                
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg line-clamp-2 hover:text-primary transition-colors">
+                        <Link href={`/project/${project.slug}`}>
+                          {project.title}
+                        </Link>
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        by {project.creator.name}
+                      </p>
+                    </div>
+                  </div>
+                </CardHeader>
 
-                {/* Project Meta */}
-                <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
-                  <div className="flex items-center">
-                    <MapPin className="h-3 w-3 mr-1" />
-                    {project.location}
-                  </div>
-                  <div className="flex items-center">
-                    <Users className="h-3 w-3 mr-1" />
-                    {project.backers} backers
-                  </div>
-                </div>
+                <CardContent className="pt-0">
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+                    {project.description}
+                  </p>
 
-                {/* Action Buttons */}
-                <div className="flex gap-2">
-                  <Button size="sm" className="flex-1" asChild>
-                    <Link href={`/project/${project.slug}`}>
-                      Support Now
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={`/project/${project.slug}`}>
-                      View Details
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  {/* Funding Progress */}
+                  <div className="mb-4">
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="font-medium">${project.currentFunding.toLocaleString()}</span>
+                      <span className="text-muted-foreground">${project.fundingGoal.toLocaleString()}</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(fundingProgress, 100)}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                      <span>{fundingProgress}% funded</span>
+                      <span>{daysLeft} days left</span>
+                    </div>
+                  </div>
+
+                  {/* Project Meta */}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                    <div className="flex items-center">
+                      <MapPin className="h-3 w-3 mr-1" />
+                      {project.location?.country || 'Global'}
+                    </div>
+                    <div className="flex items-center">
+                      <Users className="h-3 w-3 mr-1" />
+                      {project.viewCount} views
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <Button size="sm" className="flex-1" asChild>
+                      <Link href={`/project/${project.slug}`}>
+                        Support Now
+                      </Link>
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/project/${project.slug}`}>
+                        View Details
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Load More */}

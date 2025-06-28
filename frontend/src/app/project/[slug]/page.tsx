@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { Metadata } from 'next';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -26,10 +28,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-export const metadata: Metadata = {
-  title: 'Project Details - ImpactChain & CharityChain',
-  description: 'View detailed information about projects and support them through transparent blockchain funding.',
-};
 
 // Mock project data - in a real app, this would come from the API based on the slug
 const project = {
@@ -136,7 +134,8 @@ The technology has been validated through rigorous testing and has received endo
   }
 };
 
-export default function ProjectDetailPage({ params }: { params: { slug: string } }) {
+export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const fundingPercentage = (project.raised / project.goal) * 100;
   
   return (

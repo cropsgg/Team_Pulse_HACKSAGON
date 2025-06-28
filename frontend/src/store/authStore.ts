@@ -104,4 +104,5 @@ const useAuthStore = create<AuthState>()(
   )
 );
 
+export { useAuthStore };
 export default useAuthStore; 

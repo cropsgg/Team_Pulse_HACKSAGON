@@ -1,208 +1,84 @@
-import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
-import { Providers } from '@/providers/providers';
-import { getMessages } from 'next-intl/server';
+'use client';
+
+import { Inter } from 'next/font/google';
 import './globals.css';
+import { Providers } from '@/providers/providers';
+import { Toaster } from '@/components/ui/toaster';
+import { MobileNav } from '@/components/mobile-nav';
+import { SupportBot } from '@/components/support-bot';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
+const inter = Inter({ subsets: ['latin'] });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-jetbrains-mono',
-});
-
-export const metadata: Metadata = {
-  title: {
-    default: 'ImpactChain & CharityChain',
-    template: '%s | ImpactChain & CharityChain',
-  },
-  description: 'AI-Powered Decentralized Blockchain DAO platform revolutionizing funding for startups, charitable causes, and individuals in need through transparent, accountable, and efficient funding mechanisms.',
-  keywords: [
-    'blockchain',
-    'charity',
-    'fundraising',
-    'DAO',
-    'Web3',
-    'DeFi',
-    'social impact',
-    'crowdfunding',
-    'transparency',
-    'accountability',
-    'startup funding',
-    'VC',
-    'venture capital',
-    'AI-powered',
-    'Base blockchain',
-    'smart contracts',
-  ],
-  authors: [
-    {
-      name: 'ImpactChain Team',
-      url: 'https://impactchain.org',
-    },
-  ],
-  creator: 'ImpactChain',
-  publisher: 'ImpactChain',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://impactchain.org'),
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: '/',
-    title: 'ImpactChain & CharityChain - Revolutionizing Funding Through Blockchain',
-    description: 'AI-Powered Decentralized Blockchain DAO for transparent and accountable funding of startups and charitable causes.',
-    siteName: 'ImpactChain',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'ImpactChain & CharityChain',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'ImpactChain & CharityChain',
-    description: 'AI-Powered Decentralized Blockchain DAO for transparent funding',
-    images: ['/og-image.png'],
-    creator: '@impactchain',
-    site: '@impactchain',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      {
-        rel: 'mask-icon',
-        url: '/safari-pinned-tab.svg',
-        color: '#5667ff',
-      },
-    ],
-  },
-  manifest: '/site.webmanifest',
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-  },
-  other: {
-    'msapplication-TileColor': '#5667ff',
-    'theme-color': '#ffffff',
-  },
-};
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#1B1D36' },
-  ],
-  colorScheme: 'light dark',
-};
-
-interface RootLayoutProps {
-  children: React.ReactNode;
-  params: { locale: string };
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
-  params: { locale },
-}: RootLayoutProps) {
-  // Providing all messages to the client
-  // side is the easiest way to get started
-  const messages = await getMessages();
-
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html 
-      lang={locale} 
-      className={`${inter.variable} ${jetbrainsMono.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preconnect to external domains */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* Prefetch DNS for external resources */}
-        <link rel="dns-prefetch" href="//images.unsplash.com" />
-        <link rel="dns-prefetch" href="//api.impactchain.org" />
-        
-        {/* Web App Manifest */}
-        <link rel="manifest" href="/site.webmanifest" />
-        
-        {/* Safari specific meta tags */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="ImpactChain" />
-        
-        {/* Microsoft specific meta tags */}
-        <meta name="msapplication-config" content="/browserconfig.xml" />
-        
-        {/* Security headers via meta tags */}
-        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-        
-        {/* Performance hints */}
-        <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <meta name="theme-color" content="#ef4444" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
-      <body 
-        className={`
-          min-h-screen bg-background font-sans antialiased
-          selection:bg-primary/20 selection:text-primary-foreground
-        `}
-        suppressHydrationWarning
-      >
-        <Providers messages={messages}>
-          {/* Skip to main content link for accessibility */}
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-3 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          >
-            Skip to main content
-          </a>
+      <body className={`${inter.className} antialiased`}>
+        <HelmetProvider>
+          <Helmet>
+            <title>ImpactChain & CharityChain - AI-Powered Decentralized Blockchain DAO</title>
+            <meta name="description" content="Revolutionary AI-powered blockchain platform for transparent charitable giving, startup funding, and impact investing. Join the decentralized future of social impact." />
+            <meta name="keywords" content="blockchain charity, impact investing, DAO governance, startup funding, transparent donations, social impact, Web3 philanthropy, cryptocurrency donations, milestone verification, Base blockchain" />
+            <meta name="author" content="ImpactChain Team" />
+            <meta name="robots" content="index, follow" />
+            
+            {/* Open Graph */}
+            <meta property="og:type" content="website" />
+            <meta property="og:locale" content="en_US" />
+            <meta property="og:url" content="https://impactchain.org" />
+            <meta property="og:title" content="ImpactChain & CharityChain - AI-Powered Blockchain DAO" />
+            <meta property="og:description" content="Revolutionary AI-powered blockchain platform for transparent charitable giving and impact investing." />
+            <meta property="og:site_name" content="ImpactChain & CharityChain" />
+            
+            {/* Twitter */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="ImpactChain & CharityChain - AI-Powered Blockchain DAO" />
+            <meta name="twitter:description" content="Revolutionary AI-powered blockchain platform for transparent charitable giving and impact investing." />
+            <meta name="twitter:creator" content="@impactchain" />
+            
+            <link rel="canonical" href="https://impactchain.org" />
+          </Helmet>
           
-          {children}
-          
-          {/* Service Worker registration script */}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                if ('serviceWorker' in navigator) {
-                  window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('/sw.js');
-                  });
-                }
-              `,
-            }}
-          />
-        </Providers>
+          <Providers>
+            <div className="min-h-screen bg-background">
+              {/* Skip to main content for accessibility */}
+              <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded-md z-50"
+              >
+                Skip to main content
+              </a>
+              
+              {/* Mobile Navigation */}
+              <div className="md:hidden fixed top-4 left-4 z-50">
+                <MobileNav />
+              </div>
+
+              {/* Main Content */}
+              <main id="main-content" className="relative">
+                {children}
+              </main>
+
+              {/* Support Bot */}
+              <SupportBot />
+
+              {/* Toast Notifications */}
+              <Toaster />
+            </div>
+          </Providers>
+        </HelmetProvider>
       </body>
     </html>
   );

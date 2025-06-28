@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { Metadata } from 'next';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,10 +9,6 @@ import { Label } from '@/components/ui/label';
 import { ArrowLeft, Heart, Target, FileText, Sparkles, Info } from 'lucide-react';
 import Link from 'next/link';
 
-export const metadata: Metadata = {
-  title: 'Create NGO Project - ImpactChain & CharityChain',
-  description: 'Submit your charitable project for transparent blockchain funding.',
-};
 
 export default function CreateNGOPage() {
   return (

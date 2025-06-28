@@ -1,17 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './theme-provider';
 import { Web3Provider } from './web3-provider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'sonner';
 import { NextIntlClientProvider } from 'next-intl';
-import { useLocale } from 'next-intl';
+import { usePathname } from 'next/navigation';
+import { loadMessages, getLocaleFromPath, defaultLocale } from '@/lib/i18n-client';
+import type { Locale } from '@/lib/i18n-client';
 
 interface ProvidersProps {
   children: React.ReactNode;
-  messages?: any;
 }
 
 // Create a client
@@ -19,7 +20,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
-      cacheTime: 1000 * 60 * 10, // 10 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes
       refetchOnWindowFocus: false,
       retry: (failureCount, error) => {
         // Don't retry on 404s
@@ -36,8 +37,25 @@ const queryClient = new QueryClient({
   },
 });
 
-export function Providers({ children, messages }: ProvidersProps) {
-  const locale = useLocale();
+export function Providers({ children }: ProvidersProps) {
+  const pathname = usePathname();
+  const [locale, setLocale] = useState<Locale>(defaultLocale);
+  const [messages, setMessages] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const currentLocale = getLocaleFromPath(pathname);
+    setLocale(currentLocale);
+    
+    loadMessages(currentLocale).then((loadedMessages) => {
+      setMessages(loadedMessages);
+      setIsLoading(false);
+    });
+  }, [pathname]);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
@@ -63,7 +81,6 @@ export function Providers({ children, messages }: ProvidersProps) {
             />
             <ReactQueryDevtools 
               initialIsOpen={false} 
-              position="bottom-right"
             />
           </Web3Provider>
         </ThemeProvider>
