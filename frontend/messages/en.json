@@ -1,0 +1,228 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "reset": "Reset",
+    "apply": "Apply",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "navigation": {
+    "home": "Home",
+    "explore": "Explore",
+    "howItWorks": "How it Works",
+    "governance": "Governance",
+    "impact": "Impact",
+    "dashboard": "Dashboard",
+    "console": "Console",
+    "create": "Create",
+    "help": "Help",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "getStarted": "Get Started"
+  },
+  "home": {
+    "hero": {
+      "badge": "🚀 Powered by AI & Blockchain",
+      "title": "Revolutionizing Funding Through Transparent Blockchain",
+      "description": "ImpactChain & CharityChain bring AI-powered transparency to funding. Support startups, charities, and individuals through our decentralized DAO platform with complete accountability and blockchain verification.",
+      "exploreCauses": "Explore Causes",
+      "launchProject": "Launch Your Project",
+      "stats": {
+        "totalDonated": "Total Donated",
+        "startupsFunded": "Startups Funded",
+        "activeDonors": "Active Donors",
+        "successRate": "Success Rate"
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Three simple steps to transparent, accountable funding",
+      "submit": {
+        "title": "Submit",
+        "description": "Founders and NGOs submit their projects with detailed proposals, documentation, and funding goals."
+      },
+      "vote": {
+        "title": "Vote",
+        "description": "AI analyzes feasibility while the DAO community votes on funding decisions with full transparency."
+      },
+      "fund": {
+        "title": "Fund",
+        "description": "Smart contracts automatically release funds based on milestone completion and verification."
+      }
+    },
+    "features": {
+      "title": "Why Choose ImpactChain?",
+      "subtitle": "Advanced technology meets social impact for unprecedented transparency",
+      "transparency": {
+        "title": "Complete Transparency",
+        "description": "Every transaction is recorded on the blockchain with real-time tracking and public verification of fund usage."
+      },
+      "ai": {
+        "title": "AI-Powered Analysis",
+        "description": "Advanced AI evaluates project feasibility, market potential, and impact prediction before funding decisions."
+      },
+      "milestones": {
+        "title": "Milestone-Based Funding",
+        "description": "Funds are released incrementally based on verified milestone completion, ensuring accountability."
+      },
+      "global": {
+        "title": "Global Impact",
+        "description": "Support causes worldwide with multi-currency support and localized impact tracking."
+      },
+      "verified": {
+        "title": "Verified Organizations",
+        "description": "All NGOs and startups undergo rigorous verification processes with ongoing compliance monitoring."
+      },
+      "returns": {
+        "title": "Investment Returns",
+        "description": "VCs can track portfolio performance with real-time analytics and automated equity token management."
+      }
+    },
+    "cta": {
+      "title": "Ready to Make an Impact?",
+      "description": "Join thousands of donors, investors, and changemakers building a more transparent and accountable funding ecosystem.",
+      "startDonating": "Start Donating",
+      "launchProject": "Launch Project"
+    }
+  },
+  "projects": {
+    "types": {
+      "charity": "Charity",
+      "startup": "Startup",
+      "personal": "Personal",
+      "product": "Product"
+    },
+    "categories": {
+      "education": "Education",
+      "healthcare": "Healthcare",
+      "environment": "Environment",
+      "poverty": "Poverty",
+      "disasterRelief": "Disaster Relief",
+      "humanRights": "Human Rights",
+      "technology": "Technology",
+      "fintech": "Fintech",
+      "healthcareTech": "Healthcare Tech",
+      "edtech": "EdTech",
+      "cleantech": "CleanTech",
+      "ecommerce": "E-commerce",
+      "saas": "SaaS",
+      "defi": "DeFi",
+      "nft": "NFT",
+      "web3": "Web3"
+    },
+    "status": {
+      "draft": "Draft",
+      "review": "Under Review",
+      "active": "Active",
+      "funded": "Funded",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "suspended": "Suspended"
+    },
+    "verification": {
+      "pending": "Pending",
+      "verified": "Verified",
+      "rejected": "Rejected",
+      "underReview": "Under Review"
+    }
+  },
+  "funding": {
+    "donate": "Donate",
+    "invest": "Invest",
+    "fundingGoal": "Funding Goal",
+    "currentFunding": "Current Funding",
+    "progress": "Progress",
+    "backers": "Backers",
+    "daysLeft": "Days Left",
+    "ended": "Ended",
+    "funded": "Funded",
+    "target": "Target"
+  },
+  "milestones": {
+    "title": "Milestones",
+    "completed": "Completed",
+    "pending": "Pending",
+    "inProgress": "In Progress",
+    "verified": "Verified",
+    "rejected": "Rejected",
+    "evidence": "Evidence",
+    "verification": "Verification"
+  },
+  "governance": {
+    "proposals": "Proposals",
+    "votes": "Votes",
+    "voting": "Voting",
+    "quorum": "Quorum",
+    "passed": "Passed",
+    "failed": "Failed",
+    "active": "Active",
+    "executed": "Executed",
+    "voteFor": "Vote For",
+    "voteAgainst": "Vote Against",
+    "abstain": "Abstain"
+  },
+  "wallet": {
+    "connect": "Connect Wallet",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "connecting": "Connecting...",
+    "switchNetwork": "Switch Network",
+    "wrongNetwork": "Wrong Network",
+    "installWallet": "Install Wallet",
+    "balance": "Balance",
+    "address": "Address"
+  },
+  "forms": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "invalidUrl": "Invalid URL",
+    "minLength": "Minimum {count} characters required",
+    "maxLength": "Maximum {count} characters allowed",
+    "title": "Title",
+    "description": "Description",
+    "category": "Category",
+    "tags": "Tags",
+    "amount": "Amount",
+    "currency": "Currency",
+    "location": "Location",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "targetDate": "Target Date"
+  },
+  "errors": {
+    "general": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "notFound": "The requested resource was not found.",
+    "validation": "Please check your input and try again.",
+    "wallet": "Wallet connection error. Please try again.",
+    "transaction": "Transaction failed. Please try again."
+  },
+  "success": {
+    "projectCreated": "Project created successfully!",
+    "donationCompleted": "Donation completed successfully!",
+    "investmentCompleted": "Investment completed successfully!",
+    "voteSubmitted": "Vote submitted successfully!",
+    "profileUpdated": "Profile updated successfully!",
+    "settingsSaved": "Settings saved successfully!"
+  }
+} 
