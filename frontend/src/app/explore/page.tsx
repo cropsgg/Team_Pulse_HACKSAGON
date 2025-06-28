@@ -74,14 +74,14 @@ export default function ExplorePage() {
       <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container-wide flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 text-gray-200">
               <Zap className="h-5 w-5" />
             </div>
             <span className="font-bold text-xl">ImpactChain</span>
           </Link>
           
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/explore" className="text-sm font-medium text-primary">
+            <Link href="/explore" className="text-sm font-medium text-foreground">
               Explore
             </Link>
             <Link href="/how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
@@ -192,7 +192,7 @@ export default function ExplorePage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-lg line-clamp-2 hover:text-primary transition-colors">
+                      <CardTitle className="text-lg line-clamp-2 hover:text-foreground transition-colors">
                         <Link href={`/project/${project.slug}`}>{project.title}</Link>
                       </CardTitle>
                       <p className="text-sm text-muted-foreground mt-1">
@@ -215,7 +215,7 @@ export default function ExplorePage() {
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
                       <div 
-                        className="bg-primary h-2 rounded-full transition-all duration-500"
+                        className="bg-gray-600 h-2 rounded-full transition-all duration-500"
                         style={{ width: `${Math.min(fundingProgress, 100)}%` }}
                       />
                     </div>
