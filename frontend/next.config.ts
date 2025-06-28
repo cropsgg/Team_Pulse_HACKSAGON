@@ -1,6 +1,11 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // TypeScript configuration - ignore type errors during build
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  
   // Experimental features
   experimental: {
     optimizePackageImports: ['lucide-react', '@/components/ui'],

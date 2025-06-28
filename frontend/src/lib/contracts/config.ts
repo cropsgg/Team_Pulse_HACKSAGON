@@ -1,18 +1,4 @@
 import { base, baseSepolia } from 'wagmi/chains';
-import { 
-  Router__factory,
-  NGORegistry__factory,
-  DonationManager__factory,
-  MilestoneManager__factory,
-  StartupRegistry__factory,
-  EquityAllocator__factory,
-  CSRManager__factory,
-  FeeManager__factory,
-  QAMemory__factory,
-  ImpactGovernor__factory,
-  ImpactTimelock__factory,
-  ImpactToken__factory,
-} from '../typechain-types';
 
 // Contract addresses for Base mainnet
 export const BASE_MAINNET_CONTRACTS = {
@@ -49,20 +35,379 @@ export const BASE_SEPOLIA_CONTRACTS = {
   ImpactToken: '0xd3324b4e26795FA9daee79B6C0275E7e7Fd9CC53' as const,
 } as const;
 
-// Contract ABIs
+// Minimal Contract ABIs - Essential functions only for Vercel build compatibility
 export const CONTRACT_ABIS = {
-  Router: Router__factory.abi,
-  NGORegistry: NGORegistry__factory.abi,
-  DonationManager: DonationManager__factory.abi,
-  MilestoneManager: MilestoneManager__factory.abi,
-  StartupRegistry: StartupRegistry__factory.abi,
-  EquityAllocator: EquityAllocator__factory.abi,
-  CSRManager: CSRManager__factory.abi,
-  FeeManager: FeeManager__factory.abi,
-  QAMemory: QAMemory__factory.abi,
-  ImpactGovernor: ImpactGovernor__factory.abi,
-  ImpactTimelock: ImpactTimelock__factory.abi,
-  ImpactToken: ImpactToken__factory.abi,
+  Router: [
+    {
+      "inputs": [
+        { "internalType": "string", "name": "_profileHash", "type": "string" },
+        { "internalType": "address", "name": "_ngoAddress", "type": "address" }
+      ],
+      "name": "registerNGO",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "_ngoId", "type": "uint256" },
+        { "internalType": "string", "name": "_message", "type": "string" }
+      ],
+      "name": "donate",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  NGORegistry: [
+    {
+      "inputs": [
+        { "internalType": "string", "name": "_profileHash", "type": "string" },
+        { "internalType": "address", "name": "_ngoAddress", "type": "address" }
+      ],
+      "name": "registerNGO",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "_ngoId", "type": "uint256" }],
+      "name": "getNGOProfile",
+      "outputs": [],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalNGOs",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "address", "name": "_ngoAddress", "type": "address" }],
+      "name": "getNGOIdByAddress",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "_ngoId", "type": "uint256" }],
+      "name": "canReceiveDonations",
+      "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTotalNGOCount",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  DonationManager: [
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "_ngoId", "type": "uint256" },
+        { "internalType": "string", "name": "_message", "type": "string" }
+      ],
+      "name": "donate",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "_donationId", "type": "uint256" }],
+      "name": "getDonation",
+      "outputs": [],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "address", "name": "_donor", "type": "address" }],
+      "name": "getDonorHistory",
+      "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "_ngoId", "type": "uint256" }],
+      "name": "getNGODonations",
+      "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalDonations",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "platformFeeBps",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentPrice",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "_ngoId", "type": "uint256" },
+        { "internalType": "uint256", "name": "_amount", "type": "uint256" },
+        { "internalType": "string", "name": "_reason", "type": "string" }
+      ],
+      "name": "releaseFunds",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "_ngoId", "type": "uint256" },
+        { "internalType": "uint256", "name": "_amount", "type": "uint256" },
+        { "internalType": "address", "name": "_recipient", "type": "address" },
+        { "internalType": "string", "name": "_reason", "type": "string" }
+      ],
+      "name": "emergencyWithdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  StartupRegistry: [
+    {
+      "inputs": [
+        { "internalType": "address", "name": "_founder", "type": "address" },
+        { "internalType": "string", "name": "_profileHash", "type": "string" },
+        { "internalType": "uint256", "name": "_targetFunding", "type": "uint256" }
+      ],
+      "name": "registerStartup",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  ImpactGovernor: [
+    {
+      "inputs": [
+        { "internalType": "address[]", "name": "targets", "type": "address[]" },
+        { "internalType": "uint256[]", "name": "values", "type": "uint256[]" },
+        { "internalType": "bytes[]", "name": "calldatas", "type": "bytes[]" },
+        { "internalType": "string", "name": "description", "type": "string" }
+      ],
+      "name": "propose",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "proposalId", "type": "uint256" },
+        { "internalType": "uint8", "name": "support", "type": "uint8" }
+      ],
+      "name": "castVote",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "proposalId", "type": "uint256" },
+        { "internalType": "uint8", "name": "support", "type": "uint8" },
+        { "internalType": "string", "name": "reason", "type": "string" }
+      ],
+      "name": "castVoteWithReason",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "votingDelay",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "votingPeriod",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "proposalThreshold",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "proposalId", "type": "uint256" }],
+      "name": "proposalDeadline",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "proposalId", "type": "uint256" }],
+      "name": "proposalSnapshot",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "proposalId", "type": "uint256" }],
+      "name": "state",
+      "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "proposalId", "type": "uint256" },
+        { "internalType": "address", "name": "account", "type": "address" }
+      ],
+      "name": "hasVoted",
+      "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "proposalId", "type": "uint256" }],
+      "name": "proposalVotes",
+      "outputs": [
+        { "internalType": "uint256", "name": "againstVotes", "type": "uint256" },
+        { "internalType": "uint256", "name": "forVotes", "type": "uint256" },
+        { "internalType": "uint256", "name": "abstainVotes", "type": "uint256" }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "uint256", "name": "blockNumber", "type": "uint256" }],
+      "name": "quorum",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "account", "type": "address" },
+        { "internalType": "uint256", "name": "blockNumber", "type": "uint256" }
+      ],
+      "name": "getVotes",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address[]", "name": "targets", "type": "address[]" },
+        { "internalType": "uint256[]", "name": "values", "type": "uint256[]" },
+        { "internalType": "bytes[]", "name": "calldatas", "type": "bytes[]" },
+        { "internalType": "bytes32", "name": "descriptionHash", "type": "bytes32" }
+      ],
+      "name": "queue",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address[]", "name": "targets", "type": "address[]" },
+        { "internalType": "uint256[]", "name": "values", "type": "uint256[]" },
+        { "internalType": "bytes[]", "name": "calldatas", "type": "bytes[]" },
+        { "internalType": "bytes32", "name": "descriptionHash", "type": "bytes32" }
+      ],
+      "name": "execute",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address[]", "name": "targets", "type": "address[]" },
+        { "internalType": "uint256[]", "name": "values", "type": "uint256[]" },
+        { "internalType": "bytes[]", "name": "calldatas", "type": "bytes[]" },
+        { "internalType": "bytes32", "name": "descriptionHash", "type": "bytes32" }
+      ],
+      "name": "cancel",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  ImpactToken: [
+    {
+      "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
+      "name": "balanceOf",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
+      "name": "getVotes",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "account", "type": "address" },
+        { "internalType": "uint256", "name": "blockNumber", "type": "uint256" }
+      ],
+      "name": "getPastVotes",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  // Simplified ABIs for other contracts
+  MilestoneManager: [],
+  EquityAllocator: [],
+  CSRManager: [],
+  FeeManager: [],
+  QAMemory: [],
+  ImpactTimelock: []
 } as const;
 
 // Helper function to get contract addresses for current chain

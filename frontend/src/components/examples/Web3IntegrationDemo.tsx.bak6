@@ -217,7 +217,7 @@ export function Web3IntegrationDemo() {
               <div className="mt-4">
                 <p className="text-sm text-muted-foreground">Total NGOs</p>
                 <p className="text-2xl font-bold">
-                  0
+                  {ngoRegistry.totalNGOs && typeof ngoRegistry.totalNGOs === "bigint" ? ngoRegistry.totalNGOs.toString() : '0'}
                 </p>
               </div>
             </CardContent>
