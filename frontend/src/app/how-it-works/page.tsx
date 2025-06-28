@@ -30,7 +30,7 @@ const steps = [
     title: 'Submit Project',
     description: 'Founders and NGOs submit detailed project proposals with documentation, goals, and milestones.',
     icon: FileText,
-    color: 'bg-blue-500',
+    color: 'bg-gray-700',
     details: [
       'Complete project documentation',
       'Financial planning and budgets',
@@ -44,7 +44,7 @@ const steps = [
     title: 'AI Analysis',
     description: 'Advanced AI evaluates project feasibility, market potential, and impact prediction.',
     icon: Brain,
-    color: 'bg-purple-500',
+    color: 'bg-gray-600',
     details: [
       'Market analysis and competition review',
       'Technical feasibility assessment',
@@ -58,7 +58,7 @@ const steps = [
     title: 'Community Vote',
     description: 'DAO members vote on funding decisions with full transparency and accountability.',
     icon: Vote,
-    color: 'bg-green-500',
+    color: 'bg-gray-500',
     details: [
       'Transparent voting process',
       'Stake-weighted governance',
@@ -72,7 +72,7 @@ const steps = [
     title: 'Smart Contract',
     description: 'Approved projects receive funding through milestone-based smart contracts.',
     icon: CheckCircle,
-    color: 'bg-orange-500',
+    color: 'bg-gray-700',
     details: [
       'Automated fund release',
       'Milestone verification',
@@ -86,7 +86,7 @@ const steps = [
     title: 'Track Progress',
     description: 'Real-time monitoring of project progress with transparent reporting and updates.',
     icon: BarChart3,
-    color: 'bg-pink-500',
+    color: 'bg-gray-600',
     details: [
       'Real-time progress tracking',
       'Milestone completion verification',
@@ -100,7 +100,7 @@ const steps = [
     title: 'Verify Impact',
     description: 'Independent verification of project outcomes and impact measurement.',
     icon: Shield,
-    color: 'bg-indigo-500',
+    color: 'bg-gray-500',
     details: [
       'Third-party verification',
       'Impact measurement validation',
@@ -167,25 +167,25 @@ export default function HowItWorksPage() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Sign In</Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link href="/create/startup">Create Project</Link>
-            </Button>
+            <Link href="/login">
+              <Button variant="ghost" size="sm">Sign In</Button>
+            </Link>
+            <Link href="/create/startup">
+              <Button size="sm">Create Project</Button>
+            </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-hero">
+      <section className="py-20 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
         <div className="container-wide text-center">
           <Badge variant="outline" className="mb-4">
             🔄 Transparent Process
           </Badge>
           <h1 className="text-fluid-5xl font-bold mb-6">
             How ImpactChain{' '}
-            <span className="bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+            <span className="text-gradient-primary">
               Works
             </span>
           </h1>
@@ -193,11 +193,11 @@ export default function HowItWorksPage() {
             Our AI-powered blockchain platform revolutionizes funding through transparent, 
             accountable, and efficient processes that benefit both funders and recipients.
           </p>
-          <Button size="lg" asChild>
-            <Link href="/explore">
+          <Link href="/explore">
+            <Button size="lg">
               Start Exploring <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -237,7 +237,7 @@ export default function HowItWorksPage() {
                       <div className="space-y-2">
                         {step.details.map((detail, idx) => (
                           <div key={idx} className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            <CheckCircle className="h-4 w-4 text-gray-400" />
                             <span className="text-sm text-muted-foreground">{detail}</span>
                           </div>
                         ))}
@@ -246,13 +246,13 @@ export default function HowItWorksPage() {
                   </div>
                   
                   <div className="flex-shrink-0">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gray-800/30 to-gray-700/30 flex items-center justify-center">
                       <div className={`w-16 h-16 rounded-full ${step.color} flex items-center justify-center text-white shadow-lg`}>
                         <Icon className="h-8 w-8" />
                       </div>
                     </div>
                     {index < steps.length - 1 && (
-                      <div className="w-1 h-16 bg-gradient-to-b from-primary/50 to-purple-500/50 mx-auto mt-4" />
+                      <div className="w-1 h-16 bg-gradient-to-b from-gray-600/50 to-gray-500/50 mx-auto mt-4" />
                     )}
                   </div>
                 </div>
@@ -295,7 +295,7 @@ export default function HowItWorksPage() {
       {/* CTA Section */}
       <section className="py-20">
         <div className="container-wide">
-          <Card className="text-center p-12 bg-gradient-to-r from-primary/5 to-purple-500/5">
+          <Card className="text-center p-12 bg-gradient-to-r from-gray-900/30 to-gray-800/30">
             <CardContent className="space-y-6">
               <h3 className="text-fluid-2xl font-bold">Ready to Get Started?</h3>
               <p className="text-fluid-lg text-muted-foreground max-w-2xl mx-auto">
@@ -303,16 +303,12 @@ export default function HowItWorksPage() {
                 transparent and accountable funding ecosystem.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" asChild>
-                  <Link href="/explore">
-                    Explore Projects
-                  </Link>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <Link href="/create/startup">
-                    Create Project
-                  </Link>
-                </Button>
+                <Link href="/explore">
+                  <Button size="lg">Explore Projects</Button>
+                </Link>
+                <Link href="/create/startup">
+                  <Button variant="outline" size="lg">Create Project</Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
