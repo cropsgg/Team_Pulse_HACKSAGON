@@ -1,118 +1,127 @@
 'use client';
 
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import { useRouter } from 'next/navigation';
+import { ProjectCreationForm } from '@/components/forms';
+import { ProtectedRoute } from '@/components/auth';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ArrowLeft, Heart, Target, FileText, Sparkles, Info } from 'lucide-react';
-import Link from 'next/link';
-
+import { ArrowLeft, Building2, Heart } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function CreateNGOPage() {
+  const router = useRouter();
+
+  const handleSuccess = (project: any) => {
+    toast.success('NGO project created successfully!');
+    // Navigate to the project page or dashboard
+    router.push(`/project/${project.id || 'new'}`);
+  };
+
+  const handleCancel = () => {
+    router.back();
+  };
+
   return (
-    <main className="min-h-screen">
-      <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container-wide flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <span className="font-bold text-xl">ImpactChain</span>
-          </Link>
-          <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/dashboard">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
-
-      <div className="container-wide py-8">
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-              <Heart className="h-6 w-6 text-red-500" />
-            </div>
-            <div>
-              <h1 className="text-fluid-4xl font-bold">Create Charity Project</h1>
-              <p className="text-fluid-lg text-muted-foreground">
-                Submit your charitable cause for transparent community funding
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <Info className="h-5 w-5 text-red-600" />
-            <div className="text-sm text-red-800">
-              <strong>Important:</strong> All NGO submissions undergo thorough verification.
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-4xl">
-          <form className="space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                  <FileText className="h-5 w-5" />
-                  Basic Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="project-title">Project Title *</Label>
-                    <Input id="project-title" placeholder="Enter your project title" />
+    <ProtectedRoute requiredPermissions={['create_ngo_project']}>
+      <main className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="container-wide py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.back()}
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Heart className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <Label htmlFor="organization-name">Organization Name *</Label>
-                    <Input id="organization-name" placeholder="Your NGO name" />
+                    <h1 className="text-2xl font-bold text-gray-900">Create NGO Project</h1>
+                    <p className="text-gray-600">Launch your charitable initiative on CharityChain</p>
                   </div>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <Building2 className="h-4 w-4" />
+                <span>CharityChain Platform</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="container-wide py-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Info Banner */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">
+              <div className="flex items-start gap-3">
+                <Heart className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
-                  <Label htmlFor="description">Project Description *</Label>
-                  <textarea 
-                    id="description"
-                    className="w-full min-h-32 p-3 border border-input rounded-md text-sm"
-                    placeholder="Describe your charitable project..."
-                  />
+                  <h3 className="font-medium text-green-900">Creating an NGO Project</h3>
+                  <p className="text-sm text-green-700 mt-1">
+                    Your project will be submitted for review after creation. Once approved, 
+                    it will be live on the platform and eligible to receive donations. 
+                    Make sure to provide complete and accurate information.
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                  <Target className="h-5 w-5" />
-                  Funding Requirements
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="funding-goal">Funding Goal (₹) *</Label>
-                    <Input id="funding-goal" type="number" placeholder="Amount needed" />
-                  </div>
-                  <div>
-                    <Label htmlFor="beneficiaries">Beneficiaries *</Label>
-                    <Input id="beneficiaries" type="number" placeholder="People helped" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="flex justify-end gap-3">
-              <Button variant="outline">Save as Draft</Button>
-              <Button className="bg-red-600 hover:bg-red-700">Submit Project</Button>
+              </div>
             </div>
-          </form>
+
+            {/* Project Creation Form */}
+            <ProjectCreationForm
+              projectType="ngo"
+              onSuccess={handleSuccess}
+              onCancel={handleCancel}
+              className="bg-white shadow-sm"
+            />
+          </div>
         </div>
-      </div>
-    </main>
+
+        {/* Help Section */}
+        <div className="bg-white border-t border-gray-200 mt-12">
+          <div className="container-wide py-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <Heart className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-2">Impact Focused</h3>
+                  <p className="text-sm text-gray-600">
+                    Clearly define your project's social impact and how it will help communities.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <Building2 className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-2">Transparent</h3>
+                  <p className="text-sm text-gray-600">
+                    Provide detailed information about your organization and how funds will be used.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <ArrowLeft className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-2">Supported</h3>
+                  <p className="text-sm text-gray-600">
+                    Our team will help review and optimize your project for maximum impact.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </ProtectedRoute>
   );
 }

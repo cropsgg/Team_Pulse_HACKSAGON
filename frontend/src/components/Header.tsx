@@ -29,6 +29,19 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
 import { useAuthStore } from '@/store/authStore';
+import { WalletButton } from '@/components/wallet/WalletButton';
+import { useAuth } from '@/hooks/useAuth';
+import { UserProfileCard } from '@/components/profile/UserProfileCard';
+import { NotificationCenter } from '@/components/notifications/NotificationCenter';
+import { LiveStatusWidget } from '@/components/status/LiveStatusWidget';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const navigationItems = [
   {
@@ -118,7 +131,7 @@ const supportItems = [
 export function Header() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, signOut } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -171,22 +184,66 @@ export function Header() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-3">
+          {/* Live Status Widget (Compact) */}
+          {isAuthenticated && <LiveStatusWidget compact className="mr-1" />}
+          
+          {/* Web3 Wallet Connection */}
+          <WalletButton size="sm" />
+          
           {isAuthenticated ? (
             <>
-              <Button variant="ghost" size="sm" onClick={() => router.push('/notifications')}>
-                <Bell className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => router.push('/wallet')}>
-                <Wallet className="h-4 w-4" />
-              </Button>
+              {/* Notification Center */}
+              <NotificationCenter />
+              
               <Button variant="outline" size="sm" onClick={() => router.push('/create/startup')}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Project
               </Button>
               <div className="flex items-center space-x-2">
-                {user?.name && (
-                  <span className="text-sm text-muted-foreground">
-                    {user.name}
+                {user && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="flex items-center space-x-2">
+                        <Avatar className="h-8 w-8">
+                          {user.avatar ? (
+                            <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
+                              {user.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </Avatar>
+                        <span className="text-sm font-medium">{user.name}</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuLabel>
+                        <div>
+                          <p className="font-medium">{user.name}</p>
+                          <p className="text-xs text-muted-foreground">{user.email || 'No email set'}</p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => router.push('/dashboard')}>
+                        <User className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push('/profile')}>
+                        <Settings className="mr-2 h-4 w-4" />
+                        Profile Settings
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={signOut} className="text-red-600">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+                                 {!user && (
+                   <span className="text-sm text-muted-foreground">
+                     Connect wallet to sign in
                   </span>
                 )}
                 <Avatar className="h-8 w-8 cursor-pointer" onClick={() => router.push('/dashboard')}>
@@ -222,14 +279,14 @@ export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, signOut } = useAuth();
 
   const handleLinkClick = () => {
     setOpen(false);
   };
 
   const handleLogout = () => {
-    logout();
+    signOut();
     setOpen(false);
   };
 

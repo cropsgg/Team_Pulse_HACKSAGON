@@ -27,12 +27,33 @@ const queryClient = new QueryClient({
         if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
           return false;
         }
+        // Don't retry on network errors (backend unavailable)
+        if (error && typeof error === 'object' && 'message' in error) {
+          const message = (error as any).message;
+          if (message?.includes('Network Error') || 
+              message?.includes('ECONNREFUSED') ||
+              message?.includes('fetch failed')) {
+            return false; // Don't retry network errors
+          }
+        }
         // Don't retry more than 3 times
         return failureCount < 3;
       },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
     mutations: {
-      retry: 1,
+      retry: (failureCount, error) => {
+        // Don't retry network errors for mutations
+        if (error && typeof error === 'object' && 'message' in error) {
+          const message = (error as any).message;
+          if (message?.includes('Network Error') || 
+              message?.includes('ECONNREFUSED') ||
+              message?.includes('fetch failed')) {
+            return false;
+          }
+        }
+        return failureCount < 1;
+      },
     },
   },
 });
