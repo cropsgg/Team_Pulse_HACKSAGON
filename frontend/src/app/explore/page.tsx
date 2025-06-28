@@ -197,17 +197,151 @@ export default function MarketplacePage() {
     try {
       // Load projects
       const storedProjects = JSON.parse(localStorage.getItem('user-projects') || '[]');
-      const processedProjects = storedProjects.map((project: any) => ({
+      
+      // Add demo projects if no projects exist
+      const demoProjects: StoredProject[] = [
+        {
+          id: 'demo-clean-water-1',
+          type: 'ngo',
+          title: 'Clean Water for Rural Communities',
+          description: 'Building sustainable water infrastructure and providing clean drinking water access to 5,000 people in remote villages across Kenya and Tanzania.',
+          organizationName: 'Pure Water Foundation',
+          fundingGoal: 25,
+          category: 'environment',
+          location: 'Kenya & Tanzania',
+          beneficiaryCount: 5000,
+          txHash: '0xdemo1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+          status: 'CONFIRMED',
+          createdAt: '2024-01-15T10:00:00Z',
+          userAddress: '0xdemo123456789012345678901234567890Demo1234',
+          profileHash: 'QmDemo1WaterProject123456789',
+          chainId: baseSepolia.id,
+          totalRaised: 8.5,
+          donationCount: 42,
+          investors: []
+        },
+        {
+          id: 'demo-education-tech-1',
+          type: 'startup',
+          title: 'AI-Powered Learning Platform',
+          description: 'Revolutionary EdTech platform using AI to personalize learning experiences for students in developing countries. Already serving 10,000+ students.',
+          organizationName: 'EduTech Innovations',
+          fundingGoal: 100,
+          category: 'education',
+          location: 'Global (HQ: Singapore)',
+          txHash: '0xdemo2345678901bcdef2345678901bcdef2345678901bcdef2345678901bcdef123',
+          status: 'CONFIRMED',
+          createdAt: '2024-01-20T14:30:00Z',
+          userAddress: '0xdemo234567890123456789012345678901Demo2345',
+          profileHash: 'QmDemo2EducationStartup456789',
+          chainId: baseSepolia.id,
+          totalRaised: 45.2,
+          donationCount: 28,
+          investors: []
+        },
+        {
+          id: 'demo-ocean-cleanup-1',
+          type: 'ngo',
+          title: 'Ocean Plastic Cleanup Initiative',
+          description: 'Innovative ocean cleanup technology to remove plastic waste from oceans and convert it into useful products. Protecting marine life and cleaning our seas.',
+          organizationName: 'Blue Ocean Guardians',
+          fundingGoal: 50,
+          category: 'environment',
+          location: 'Pacific Ocean',
+          beneficiaryCount: 1000000,
+          txHash: '0xdemo3456789012cdef3456789012cdef3456789012cdef3456789012cdef234567',
+          status: 'CONFIRMED',
+          createdAt: '2024-01-18T09:15:00Z',
+          userAddress: '0xdemo345678901234567890123456789012Demo3456',
+          profileHash: 'QmDemo3OceanCleanup789012',
+          chainId: baseSepolia.id,
+          totalRaised: 23.7,
+          donationCount: 67,
+          investors: []
+        },
+        {
+          id: 'demo-fintech-inclusion-1',
+          type: 'startup',
+          title: 'Mobile Banking for the Unbanked',
+          description: 'Blockchain-based mobile banking solution providing financial services to 2 billion unbanked people worldwide. Already operational in 5 countries.',
+          organizationName: 'InclusiveFin Technologies',
+          fundingGoal: 200,
+          category: 'fintech',
+          location: 'Kenya, Nigeria, India, Brazil, Philippines',
+          txHash: '0xdemo4567890123def4567890123def4567890123def4567890123def34567890',
+          status: 'CONFIRMED',
+          createdAt: '2024-01-12T16:45:00Z',
+          userAddress: '0xdemo456789012345678901234567890123Demo4567',
+          profileHash: 'QmDemo4FintechInclusion012345',
+          chainId: baseSepolia.id,
+          totalRaised: 78.9,
+          donationCount: 35,
+          investors: []
+        },
+        {
+          id: 'demo-rural-healthcare-1',
+          type: 'ngo',
+          title: 'Mobile Healthcare Clinics',
+          description: 'Bringing essential healthcare services to remote rural communities through mobile clinics equipped with telemedicine technology and basic medical supplies.',
+          organizationName: 'Rural Health Alliance',
+          fundingGoal: 40,
+          category: 'healthcare',
+          location: 'Rural India & Bangladesh',
+          beneficiaryCount: 25000,
+          txHash: '0xdemo5678901234ef5678901234ef5678901234ef5678901234ef456789012345',
+          status: 'CONFIRMED',
+          createdAt: '2024-01-25T11:20:00Z',
+          userAddress: '0xdemo567890123456789012345678901234Demo5678',
+          profileHash: 'QmDemo5HealthcareProject345678',
+          chainId: baseSepolia.id,
+          totalRaised: 15.3,
+          donationCount: 89,
+          investors: []
+        },
+        {
+          id: 'demo-green-energy-1',
+          type: 'startup',
+          title: 'Solar Power for African Villages',
+          description: 'Affordable solar power solutions for off-grid communities in Africa. Our micro-grid technology has already electrified 50+ villages.',
+          organizationName: 'African Solar Solutions',
+          fundingGoal: 150,
+          category: 'cleantech',
+          location: 'Sub-Saharan Africa',
+          txHash: '0xdemo678901234567890123456789012345678901234567890123456789012345f',
+          status: 'CONFIRMED',
+          createdAt: '2024-01-10T08:30:00Z',
+          userAddress: '0xdemo678901234567890123456789012345Demo6789',
+          profileHash: 'QmDemo6SolarEnergyStartup567890',
+          chainId: baseSepolia.id,
+          totalRaised: 92.4,
+          donationCount: 51,
+          investors: []
+        }
+      ];
+
+      // Combine stored projects with demo projects (avoid duplicates)
+      const existingIds = new Set(storedProjects.map((p: any) => p.id));
+      const newDemoProjects = demoProjects.filter(demo => !existingIds.has(demo.id));
+      
+      const allProjects = [...storedProjects, ...newDemoProjects].map((project: any) => ({
         ...project,
         totalRaised: project.totalRaised || 0,
         donationCount: project.donationCount || 0,
         investors: project.investors || []
       }));
-      setProjects(processedProjects);
+      
+      setProjects(allProjects);
       
       // Load donations
       const storedDonations = JSON.parse(localStorage.getItem('marketplace-donations') || '[]');
       setDonations(storedDonations);
+      
+      console.log('🎯 Loaded marketplace data:', {
+        totalProjects: allProjects.length,
+        userProjects: storedProjects.length,
+        demoProjects: newDemoProjects.length,
+        donations: storedDonations.length
+      });
       
     } catch (error) {
       console.error('Error loading stored data:', error);
@@ -539,6 +673,12 @@ export default function MarketplacePage() {
                         {project.type.toUpperCase()}
                       </Badge>
                       {getStatusBadge(project)}
+                      {project.id.startsWith('demo-') && (
+                        <Badge variant="outline" className="bg-gradient-to-r from-yellow-100 to-orange-100 border-yellow-500 text-yellow-800">
+                          <Zap className="h-3 w-3 mr-1" />
+                          Demo
+                        </Badge>
+                      )}
                     </div>
                     <div className="absolute top-3 right-3">
                       <Badge variant="outline" className="bg-background/80 backdrop-blur">
