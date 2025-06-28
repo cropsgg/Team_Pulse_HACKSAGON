@@ -1,7 +1,4 @@
 import type { NextConfig } from 'next';
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -30,6 +27,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
+  trailingSlash: false,
 };
 
-export default withNextIntl(nextConfig); 
+export default nextConfig; 

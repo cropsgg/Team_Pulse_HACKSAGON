@@ -62,23 +62,19 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // Custom brand colors
+        // Enhanced Brand Colors
         brand: {
-          ink: '#1B1D36',
-          paper: '#F2F5FF',
-          blue: {
-            50: '#f0f4ff',
-            100: '#e0e9ff',
-            200: '#c7d7fe',
-            300: '#a5bcfc',
-            400: '#8298f8',
-            500: '#5667ff',
-            600: '#4c58e8',
-            700: '#3d47d4',
-            800: '#323ba8',
-            900: '#2f3686',
-          },
+          primary: '#4F80FF', // Beautiful blue
+          secondary: '#22C55E', // Vibrant green
+          accent: '#8B5CF6', // Modern purple
+          neutral: '#1F2937', // Rich dark
+          gradient: {
+            primary: 'linear-gradient(135deg, #4F80FF 0%, #8B5CF6 100%)',
+            secondary: 'linear-gradient(135deg, #22C55E 0%, #3B82F6 100%)',
+            hero: 'linear-gradient(135deg, #4F80FF 0%, #8B5CF6 50%, #22C55E 100%)',
+          }
         },
+        // Modern Color Palette
         success: {
           50: '#f0fdf4',
           100: '#dcfce7',
@@ -115,11 +111,26 @@ const config: Config = {
           800: '#991b1b',
           900: '#7f1d1d',
         },
+        // Beautiful Grays
+        gray: {
+          50: '#f9fafb',
+          100: '#f3f4f6',
+          200: '#e5e7eb',
+          300: '#d1d5db',
+          400: '#9ca3af',
+          500: '#6b7280',
+          600: '#4b5563',
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
       },
       fontFamily: {
         sans: [
@@ -150,15 +161,29 @@ const config: Config = {
         'fluid-lg': 'clamp(1.125rem, 1rem + 0.75vw, 1.25rem)',
         'fluid-xl': 'clamp(1.25rem, 1.1rem + 0.9vw, 1.5rem)',
         'fluid-2xl': 'clamp(1.5rem, 1.3rem + 1.2vw, 1.875rem)',
-        'fluid-3xl': 'clamp(1.875rem, 1.6rem + 1.65vw, 2.25rem)',
-        'fluid-4xl': 'clamp(2.25rem, 1.9rem + 2.1vw, 3rem)',
-        'fluid-5xl': 'clamp(3rem, 2.5rem + 3vw, 3.75rem)',
+        'fluid-3xl': 'clamp(1.875rem, 1.6rem + 1.65vw, 2.5rem)',
+        'fluid-4xl': 'clamp(2.5rem, 2rem + 2.5vw, 3.5rem)',
+        'fluid-5xl': 'clamp(3.5rem, 3rem + 4vw, 5rem)',
       },
       spacing: {
         '18': '4.5rem',
         '88': '22rem',
         '128': '32rem',
         '144': '36rem',
+      },
+      boxShadow: {
+        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+        'medium': '0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        'hard': '0 10px 40px -15px rgba(0, 0, 0, 0.2), 0 4px 25px -5px rgba(0, 0, 0, 0.1)',
+        'glow': '0 0 50px rgba(79, 128, 255, 0.15)',
+        'glow-lg': '0 0 60px rgba(79, 128, 255, 0.25)',
+      },
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(135deg, #4F80FF 0%, #8B5CF6 100%)',
+        'gradient-secondary': 'linear-gradient(135deg, #22C55E 0%, #3B82F6 100%)',
+        'gradient-hero': 'linear-gradient(135deg, #4F80FF 0%, #8B5CF6 50%, #22C55E 100%)',
+        'gradient-card': 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+        'gradient-mesh': 'radial-gradient(circle at 25% 25%, #4F80FF 0%, transparent 50%), radial-gradient(circle at 75% 75%, #8B5CF6 0%, transparent 50%)',
       },
       keyframes: {
         'accordion-down': {
@@ -174,7 +199,7 @@ const config: Config = {
           '100%': { opacity: '1' },
         },
         'fade-in-up': {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         'slide-in-right': {
@@ -191,7 +216,7 @@ const config: Config = {
         },
         'bounce-gentle': {
           '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-5px)' },
+          '50%': { transform: 'translateY(-10px)' },
         },
         'pulse-gentle': {
           '0%, 100%': { opacity: '1' },
@@ -201,9 +226,13 @@ const config: Config = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
-        'confetti': {
-          '0%': { transform: 'rotateZ(0deg) translateY(0px) rotateX(0deg)' },
-          '100%': { transform: 'rotateZ(360deg) translateY(-1000px) rotateX(180deg)' },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        'glow': {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(79, 128, 255, 0.3)' },
+          '50%': { boxShadow: '0 0 40px rgba(79, 128, 255, 0.6)' },
         },
       },
       animation: {
@@ -214,30 +243,21 @@ const config: Config = {
         'slide-in-right': 'slide-in-right 0.3s ease-out',
         'slide-in-left': 'slide-in-left 0.3s ease-out',
         'scale-in': 'scale-in 0.2s ease-out',
-        'bounce-gentle': 'bounce-gentle 2s infinite',
-        'pulse-gentle': 'pulse-gentle 2s infinite',
-        'shimmer': 'shimmer 2s infinite',
-        'confetti': 'confetti 3s ease-out infinite',
+        'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
+        'pulse-gentle': 'pulse-gentle 2s ease-in-out infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
       },
       backdropBlur: {
         xs: '2px',
       },
-      boxShadow: {
-        'soft': '0 2px 8px 0 rgba(0, 0, 0, 0.06)',
-        'medium': '0 4px 16px 0 rgba(0, 0, 0, 0.08)',
-        'strong': '0 8px 32px 0 rgba(0, 0, 0, 0.12)',
-        'glow': '0 0 20px rgba(86, 103, 255, 0.3)',
-        'glow-strong': '0 0 40px rgba(86, 103, 255, 0.4)',
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'mesh-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        'hero-gradient': 'linear-gradient(135deg, rgba(86,103,255,0.1) 0%, rgba(118,75,162,0.1) 100%)',
+      screens: {
+        'xs': '475px',
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [],
 } satisfies Config;
 
 export default config; 

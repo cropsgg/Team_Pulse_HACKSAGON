@@ -169,11 +169,9 @@ export function MobileNav() {
                   <div className="font-medium text-sm truncate">{user.name || 'User'}</div>
                   <div className="text-xs text-muted-foreground truncate">{user.email}</div>
                   <div className="flex items-center space-x-1 mt-1">
-                    {user.roles?.map((role) => (
-                      <Badge key={role} variant="secondary" className="text-xs">
-                        {role}
-                      </Badge>
-                    ))}
+                    <Badge variant="secondary" className="text-xs">
+                      {user.role}
+                    </Badge>
                   </div>
                 </div>
               </div>

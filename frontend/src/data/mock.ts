@@ -1,25 +1,25 @@
-import type {
-  User,
-  Project,
+import {
+  type User,
+  type Project,
   ProjectType,
   ProjectCategory,
   ProjectStatus,
   UserRole,
   KYCStatus,
-  Milestone,
+  type Milestone,
   MilestoneStatus,
-  Transaction,
+  type Transaction,
   TransactionType,
   TransactionStatus,
-  Proposal,
+  type Proposal,
   ProposalType,
   ProposalStatus,
-  Investment,
+  type Investment,
   InvestmentStatus,
-  Donation,
+  type Donation,
   DonationStatus,
-  PlatformMetrics,
-  Notification,
+  type PlatformMetrics,
+  type Notification,
   NotificationType,
 } from '@/types';
 
@@ -467,6 +467,7 @@ export const mockTransactions: Transaction[] = [
     },
   },
 ];
+export const projects = mockProjects;
 
 // Mock Notifications
 export const mockNotifications: Notification[] = [

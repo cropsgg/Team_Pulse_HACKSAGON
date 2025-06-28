@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { Metadata } from 'next';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -23,10 +25,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-export const metadata: Metadata = {
-  title: 'Create Startup Project - ImpactChain & CharityChain',
-  description: 'Submit your startup for funding through our transparent blockchain platform.',
-};
 
 const formSections = [
   { id: 'basic', title: 'Basic Information', icon: FileText },
