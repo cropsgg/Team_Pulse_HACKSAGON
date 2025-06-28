@@ -123,12 +123,12 @@ export default function GovernancePage() {
           </div>
 
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Sign In</Link>
-            </Button>
-            <Button size="sm" asChild>
-              <Link href="/create/proposal">Create Proposal</Link>
-            </Button>
+            <Link href="/login">
+              <Button variant="ghost" size="sm">Sign In</Button>
+            </Link>
+            <Link href="/create/proposal">
+              <Button size="sm">Create Proposal</Button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -149,11 +149,11 @@ export default function GovernancePage() {
             Participate in democratic governance, vote on proposals, and help build a more 
             accountable and transparent funding ecosystem for everyone.
           </p>
-          <Button size="lg" asChild>
-            <Link href="#proposals">
+          <Link href="#proposals">
+            <Button size="lg">
               View Proposals <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -219,11 +219,9 @@ export default function GovernancePage() {
                 Vote on proposals that shape the future of our platform
               </p>
             </div>
-            <Button asChild>
-              <Link href="/create/proposal">
-                Create Proposal
-              </Link>
-            </Button>
+            <Link href="/create/proposal">
+              <Button>Create Proposal</Button>
+            </Link>
           </div>
 
           <div className="space-y-6">

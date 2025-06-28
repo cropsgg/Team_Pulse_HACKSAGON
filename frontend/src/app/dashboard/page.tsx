@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -106,6 +107,8 @@ const supportedProjects = [
 ];
 
 export default function DashboardPage() {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen">
       {/* Navigation */}
@@ -156,17 +159,13 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/explore">
-                  <Eye className="mr-2 h-4 w-4" />
-                  Explore Projects
-                </Link>
+              <Button variant="outline" size="lg" onClick={() => router.push('/explore')}>
+                <Eye className="mr-2 h-4 w-4" />
+                Explore Projects
               </Button>
-              <Button size="lg" asChild>
-                <Link href="/create/startup">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Project
-                </Link>
+              <Button size="lg" onClick={() => router.push('/create/startup')}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Project
               </Button>
             </div>
           </div>
@@ -201,8 +200,8 @@ export default function DashboardPage() {
                     <Activity className="h-5 w-5" />
                     Recent Activity
                   </CardTitle>
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href="/activity">View All</Link>
+                  <Button variant="ghost" size="sm" onClick={() => router.push('/activity')}>
+                    View All
                   </Button>
                 </div>
               </CardHeader>
@@ -261,29 +260,21 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Button className="w-full justify-start" asChild>
-                    <Link href="/explore">
-                      <Eye className="mr-2 h-4 w-4" />
-                      Explore New Projects
-                    </Link>
+                  <Button className="w-full justify-start" onClick={() => router.push('/explore')}>
+                    <Eye className="mr-2 h-4 w-4" />
+                    Explore Projects
                   </Button>
-                  <Button className="w-full justify-start" variant="outline" asChild>
-                    <Link href="/create/startup">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create Project
-                    </Link>
+                  <Button className="w-full justify-start" variant="outline" onClick={() => router.push('/create/startup')}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Project
                   </Button>
-                  <Button className="w-full justify-start" variant="outline" asChild>
-                    <Link href="/governance">
-                      <Users className="mr-2 h-4 w-4" />
-                      View Proposals
-                    </Link>
+                  <Button className="w-full justify-start" variant="outline" onClick={() => router.push('/governance')}>
+                    <Users className="mr-2 h-4 w-4" />
+                    View Proposals
                   </Button>
-                  <Button className="w-full justify-start" variant="outline" asChild>
-                    <Link href="/wallet">
-                      <Wallet className="mr-2 h-4 w-4" />
-                      Manage Wallet
-                    </Link>
+                  <Button className="w-full justify-start" variant="outline" onClick={() => router.push('/wallet')}>
+                    <Wallet className="mr-2 h-4 w-4" />
+                    Manage Wallet
                   </Button>
                 </div>
               </CardContent>
@@ -330,8 +321,8 @@ export default function DashboardPage() {
         <div className="mt-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Your Supported Projects</h2>
-            <Button variant="outline" asChild>
-              <Link href="/my-projects">View All</Link>
+            <Button variant="outline" onClick={() => router.push('/my-projects')}>
+              View All
             </Button>
           </div>
 
@@ -377,17 +368,12 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="flex-1" asChild>
-                      <Link href={`/project/${project.id}`}>
-                        <Eye className="h-4 w-4 mr-2" />
-                        View
-                      </Link>
+                    <Button size="sm" variant="outline" className="flex-1" onClick={() => router.push(`/project/${project.id}`)}>
+                      <Eye className="h-4 w-4 mr-2" />
+                      View
                     </Button>
-                    <Button size="sm" className="flex-1" asChild>
-                      <Link href={`/project/${project.id}/donate`}>
-                        <Heart className="h-4 w-4 mr-2" />
-                        Donate More
-                      </Link>
+                    <Button size="sm" className="flex-1" onClick={() => router.push(`/project/${project.id}/donate`)}>
+                      Donate More
                     </Button>
                   </div>
                 </CardContent>
