@@ -220,7 +220,7 @@ contract QAMemory is
         string calldata _cid,
         string calldata _language,
         string[] calldata _tags
-    ) external onlyRole(CONTRIBUTOR_ROLE) whenNotPaused returns (uint256) {
+    ) public onlyRole(CONTRIBUTOR_ROLE) whenNotPaused returns (uint256) {
         if (bytes(_contentHash).length == 0 || bytes(_contentHash).length > MAX_CONTENT_SIZE) {
             revert InvalidContentSize();
         }
@@ -330,7 +330,7 @@ contract QAMemory is
         uint256 _qaId,
         bool _approved,
         string calldata _notes
-    ) external onlyRole(VALIDATOR_ROLE) whenNotPaused {
+    ) public onlyRole(VALIDATOR_ROLE) whenNotPaused {
         QAMemory storage qa = _qaMemories[_qaId];
         if (qa.contributor == address(0)) revert QANotFound();
         if (_validationStatus[_qaId].isValidated) revert ContentAlreadyValidated();

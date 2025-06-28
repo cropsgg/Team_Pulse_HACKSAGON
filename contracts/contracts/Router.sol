@@ -85,7 +85,7 @@ contract Router is AccessControl, Pausable, ReentrancyGuard, IImpactChainCore {
     function updateModule(
         string calldata _moduleName,
         address _moduleAddress
-    ) external onlyRole(MODULE_ADMIN_ROLE) {
+    ) public onlyRole(MODULE_ADMIN_ROLE) {
         if (_moduleAddress == address(0)) revert InvalidModuleAddress();
 
         address oldAddress = moduleAddresses[_moduleName];

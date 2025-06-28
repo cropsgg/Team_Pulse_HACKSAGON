@@ -204,6 +204,6 @@ interface IImpactChainCore {
     error MilestoneNotCompleted();
     error DeadlineExceeded();
     error AlreadyCompleted();
-    error VotingStillActive();
+    // error VotingStillActive(); // Commented to avoid duplicate with StartupRegistry
     error InvalidStatus();
 }

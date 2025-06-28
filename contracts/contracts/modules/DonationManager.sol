@@ -254,7 +254,7 @@ contract DonationManager is
         uint256 _ngoId,
         uint256 _amount,
         string calldata _reason
-    ) external onlyRole(FUND_MANAGER_ROLE) whenNotPaused nonReentrant {
+    ) public onlyRole(FUND_MANAGER_ROLE) whenNotPaused nonReentrant {
         if (_amount == 0) revert InvalidAmount();
         if (escrowedFunds[_ngoId] < _amount) revert InsufficientEscrowBalance();
         if (!ngoRegistry.canReceiveDonations(_ngoId)) revert NGONotVerified();

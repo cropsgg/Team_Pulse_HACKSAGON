@@ -223,7 +223,7 @@ contract EquityAllocator is
         uint256 _investmentAmount,
         uint256 _cliffPeriod,
         uint256 _vestingPeriod
-    ) external onlyRole(EQUITY_MANAGER_ROLE) whenNotPaused returns (uint256) {
+    ) public onlyRole(EQUITY_MANAGER_ROLE) whenNotPaused returns (uint256) {
         if (_vc == address(0)) revert InvalidAddress();
         if (_investmentAmount == 0) revert InvalidAmount();
         if (escrowedETH[_roundId] < _investmentAmount) revert InsufficientEscrowedETH();
@@ -410,7 +410,12 @@ contract EquityAllocator is
     /**
      * @dev Returns vesting status for an allocation
      * @param _allocationId Allocation ID
-     * @return status Vesting status information
+     * @return totalShares Total shares allocated
+     * @return vestedShares Shares that have vested
+     * @return claimedShares Shares that have been claimed
+     * @return claimableShares Shares that can be claimed now
+     * @return cliffMet Whether the cliff period has been met
+     * @return nextVestingTime Next vesting milestone timestamp
      */
     function getVestingStatus(uint256 _allocationId) external view returns (
         uint256 totalShares,

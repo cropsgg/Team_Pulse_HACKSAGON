@@ -208,6 +208,13 @@ contract FeeManager is
         uint256 beneficiaryCount
     );
 
+    /// @dev Emitted when fees are distributed for specific purposes
+    event FeeDistributed(
+        string indexed purpose,
+        uint256 amount,
+        address indexed recipient
+    );
+
     // =============================================================
     //                        ERRORS
     // =============================================================

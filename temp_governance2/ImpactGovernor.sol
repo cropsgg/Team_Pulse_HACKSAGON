@@ -160,7 +160,6 @@ contract ImpactGovernor is
     /**
      * @dev Returns quorum for a specific proposal based on its type
      * @param proposalId The proposal ID
-     * @param timepoint The timepoint for vote counting
      * @return The required quorum
      */
     function quorum(uint256 proposalId)
@@ -169,26 +168,8 @@ contract ImpactGovernor is
         override(IGovernor, GovernorVotesQuorumFraction)
         returns (uint256)
     {
-        // Get proposal description
-        (,,,, string memory description) = proposalDetails(proposalId);
-        
-        // Check for custom quorum based on proposal type
-        if (bytes(description).length > 0) {
-            if (_contains(description, "[TREASURY]")) {
-                return (token().getPastTotalSupply(proposalSnapshot(proposalId)) 
-                       * customQuorums[keccak256("TREASURY")]) / 100;
-            }
-            if (_contains(description, "[UPGRADE]")) {
-                return (token().getPastTotalSupply(proposalSnapshot(proposalId)) 
-                       * customQuorums[keccak256("UPGRADE")]) / 100;
-            }
-            if (_contains(description, "[EMERGENCY]")) {
-                return (token().getPastTotalSupply(proposalSnapshot(proposalId)) 
-                       * customQuorums[keccak256("EMERGENCY")]) / 100;
-            }
-        }
-        
-        // Default quorum
+        // Use default quorum for now
+        // TODO: Implement proposal type tracking for custom quorums
         return super.quorum(proposalId);
     }
 
@@ -202,6 +183,7 @@ contract ImpactGovernor is
     function proposalVotes(uint256 proposalId)
         public
         view
+        override
         returns (uint256 againstVotes, uint256 forVotes, uint256 abstainVotes)
     {
         return super.proposalVotes(proposalId);

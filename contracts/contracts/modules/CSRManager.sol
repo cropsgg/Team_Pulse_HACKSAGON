@@ -398,7 +398,7 @@ contract CSRManager is
      * @param _year Tax year
      * @return reportHash IPFS hash of the generated report
      */
-    function generateTaxReport(uint256 _year) external view returns (string memory reportHash) {
+    function generateTaxReport(uint256 _year) external returns (string memory reportHash) {
         if (_corporateProfiles[msg.sender].registrationTime == 0) revert CompanyNotRegistered();
         if (_year > getCurrentTaxYear()) revert InvalidTaxYear();
 
@@ -478,7 +478,10 @@ contract CSRManager is
     /**
      * @dev Returns CSR impact metrics for a company
      * @param _company Company address
-     * @return metrics CSR impact metrics
+     * @return totalGranted Total amount granted by the company
+     * @return grantCount Number of grants made by the company
+     * @return currentYearContributions Contributions made in current tax year
+     * @return beneficiaryNGOCount Number of unique NGOs that received grants
      */
     function getCSRMetrics(address _company) external view returns (
         uint256 totalGranted,

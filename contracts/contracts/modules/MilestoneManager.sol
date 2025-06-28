@@ -275,7 +275,7 @@ contract MilestoneManager is
         uint256 _milestoneId,
         bool _approved,
         string calldata _reason
-    ) external whenNotPaused {
+    ) public whenNotPaused {
         Milestone storage milestone = _milestones[_milestoneId];
         if (milestone.verifier == address(0)) revert MilestoneNotFound();
         if (milestone.isCompleted) revert MilestoneAlreadyCompleted();
