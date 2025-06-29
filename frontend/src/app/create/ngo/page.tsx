@@ -143,7 +143,7 @@ export default function CreateNGOPage() {
             href={`https://sepolia.basescan.org/tx/${ngoTxHash}`} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-400 hover:text-blue-300 underline"
           >
             View TX: {ngoTxHash.slice(0, 10)}...{ngoTxHash.slice(-6)}
           </a>
