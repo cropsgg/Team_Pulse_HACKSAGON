@@ -86,9 +86,9 @@ export default function CreateStartupPage() {
 
   return (
     <ProtectedRoute requiredPermissions={['create_startup_project']}>
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-background">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200">
+        <div className="bg-card border-b border-border">
           <div className="container-wide py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -96,23 +96,23 @@ export default function CreateStartupPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => router.back()}
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Rocket className="h-5 w-5 text-blue-600" />
+                  <div className="h-10 w-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <Rocket className="h-5 w-5 text-blue-400" />
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Create Startup</h1>
-                    <p className="text-gray-600">Launch your venture on ImpactChain</p>
+                    <h1 className="text-2xl font-bold text-foreground">Create Startup</h1>
+                    <p className="text-muted-foreground">Launch your venture on ImpactChain</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <TrendingUp className="h-4 w-4" />
                 <span>ImpactChain Platform</span>
               </div>
@@ -129,9 +129,9 @@ export default function CreateStartupPage() {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-start gap-3">
-                      <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
+                      <AlertTriangle className="h-5 w-5 text-red-400 mt-0.5" />
                       <div>
-                        <h3 className="font-semibold text-red-500">Wrong Network Detected</h3>
+                        <h3 className="font-semibold text-red-200">Wrong Network Detected</h3>
                         <p className="text-sm text-red-300 mt-1">
                           You're connected to the wrong network. Please switch to <strong>Base Sepolia</strong> to register your startup on the blockchain.
                         </p>
@@ -158,10 +158,10 @@ export default function CreateStartupPage() {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-3 w-3 bg-green-500 rounded-full animate-pulse"></div>
+                      <div className="h-3 w-3 bg-green-400 rounded-full animate-pulse"></div>
                       <div>
-                        <h3 className="font-semibold text-green-600">Ready for Blockchain Registration! 🚀</h3>
-                        <p className="text-sm text-green-700 mt-1">
+                        <h3 className="font-semibold text-green-200">Ready for Blockchain Registration! 🚀</h3>
+                        <p className="text-sm text-green-300 mt-1">
                           You're connected to Base Sepolia testnet. Your startup registration will be recorded on the blockchain.
                         </p>
                       </div>
@@ -169,7 +169,7 @@ export default function CreateStartupPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-green-500/30 text-green-600 hover:bg-green-500/10"
+                      className="border-green-500/30 text-green-400 hover:bg-green-500/10"
                       onClick={testStartupRegistration}
                       disabled={isRegistering}
                     >
@@ -181,12 +181,12 @@ export default function CreateStartupPage() {
             )}
 
             {/* Info Banner */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-8">
               <div className="flex items-start gap-3">
-                <Rocket className="h-5 w-5 text-blue-600 mt-0.5" />
+                <Rocket className="h-5 w-5 text-blue-400 mt-0.5" />
                 <div className="flex-1">
-                  <h3 className="font-medium text-blue-900">Creating a Startup Project</h3>
-                  <p className="text-sm text-blue-700 mt-1">
+                  <h3 className="font-medium text-blue-200">Creating a Startup Project</h3>
+                  <p className="text-sm text-blue-300 mt-1">
                     Your startup will be reviewed by our investment committee. 
                     Once approved, accredited investors will be able to view and invest in your venture. 
                     Provide comprehensive business information for the best results.
@@ -195,7 +195,7 @@ export default function CreateStartupPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-blue-500/30 text-blue-600 hover:bg-blue-50"
+                  className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10"
                   onClick={fillTemplateData}
                 >
                   Use Template
@@ -208,40 +208,40 @@ export default function CreateStartupPage() {
               projectType="startup"
               onSuccess={handleSuccess}
               onCancel={handleCancel}
-              className="bg-white shadow-sm"
+              className="bg-card shadow-sm"
             />
           </div>
         </div>
 
         {/* Help Section */}
-        <div className="bg-white border-t border-gray-200 mt-12">
+        <div className="bg-card border-t border-border mt-12">
           <div className="container-wide py-8">
             <div className="max-w-4xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <Rocket className="h-6 w-6 text-blue-600" />
+                  <div className="h-12 w-12 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <Rocket className="h-6 w-6 text-blue-400" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-2">Innovation</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-medium text-foreground mb-2">Innovation</h3>
+                  <p className="text-sm text-muted-foreground">
                     Showcase your unique value proposition and how you're solving real problems.
                   </p>
                 </div>
                 <div className="text-center">
-                  <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <TrendingUp className="h-6 w-6 text-purple-600" />
+                  <div className="h-12 w-12 bg-purple-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <TrendingUp className="h-6 w-6 text-purple-400" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-2">Growth Potential</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-medium text-foreground mb-2">Growth Potential</h3>
+                  <p className="text-sm text-muted-foreground">
                     Demonstrate clear market opportunity and scalable business model.
                   </p>
                 </div>
                 <div className="text-center">
-                  <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <DollarSign className="h-6 w-6 text-green-600" />
+                  <div className="h-12 w-12 bg-green-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <DollarSign className="h-6 w-6 text-green-400" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-2">Investment Ready</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-medium text-foreground mb-2">Investment Ready</h3>
+                  <p className="text-sm text-muted-foreground">
                     Provide financial projections and clear use of funds for investor confidence.
                   </p>
                 </div>

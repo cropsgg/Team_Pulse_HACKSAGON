@@ -159,9 +159,9 @@ export default function CreateNGOPage() {
 
   return (
     <ProtectedRoute requiredPermissions={['create_ngo_project']}>
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-background">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200">
+        <div className="bg-card border-b border-border">
           <div className="container-wide py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -169,18 +169,18 @@ export default function CreateNGOPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => router.back()}
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Heart className="h-5 w-5 text-green-600" />
+                  <div className="h-10 w-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <Heart className="h-5 w-5 text-green-400" />
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Create NGO Project</h1>
-                    <p className="text-gray-600">Launch your charitable initiative on CharityChain</p>
+                    <h1 className="text-2xl font-bold text-foreground">Create NGO Project</h1>
+                    <p className="text-muted-foreground">Launch your charitable initiative on CharityChain</p>
                   </div>
                 </div>
               </div>
@@ -188,12 +188,12 @@ export default function CreateNGOPage() {
               <div className="flex items-center gap-3">
                 {/* Network Status */}
                 {isOnSupportedNetwork ? (
-                  <Badge variant="outline" className="text-green-600 border-green-600">
+                  <Badge variant="outline" className="text-green-400 border-green-400">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     {supportedNetworkName}
                   </Badge>
                 ) : (
-                  <Badge variant="destructive" className="text-red-600">
+                  <Badge variant="destructive" className="text-red-400">
                     <AlertTriangle className="h-3 w-3 mr-1" />
                     Wrong Network
                   </Badge>
@@ -201,18 +201,18 @@ export default function CreateNGOPage() {
                 
                 {/* Wallet Status */}
                 {isConnected && address ? (
-                  <Badge variant="outline" className="text-blue-600 border-blue-600">
+                  <Badge variant="outline" className="text-blue-400 border-blue-400">
                     <Wallet className="h-3 w-3 mr-1" />
                     {address.slice(0, 6)}...{address.slice(-4)}
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-orange-600 border-orange-600">
+                  <Badge variant="outline" className="text-orange-400 border-orange-400">
                     <Wallet className="h-3 w-3 mr-1" />
                     Not Connected
                   </Badge>
                 )}
                 
-                <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Building2 className="h-4 w-4" />
                   <span>CharityChain Platform</span>
                 </div>
@@ -223,16 +223,16 @@ export default function CreateNGOPage() {
 
         {/* Network Warning Banner */}
         {!isOnSupportedNetwork && (
-          <div className="bg-orange-50 border-b border-orange-200">
+          <div className="bg-orange-500/10 border-b border-orange-500/30">
             <div className="container-wide py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <AlertTriangle className="h-5 w-5 text-orange-600" />
+                  <AlertTriangle className="h-5 w-5 text-orange-400" />
                   <div>
-                    <p className="text-sm font-medium text-orange-900">
+                    <p className="text-sm font-medium text-orange-200">
                       Please switch to Base Sepolia network
                     </p>
-                    <p className="text-xs text-orange-700">
+                    <p className="text-xs text-orange-300">
                       NGO registration requires Base Sepolia testnet for blockchain transactions
                     </p>
                   </div>
@@ -241,7 +241,7 @@ export default function CreateNGOPage() {
                   variant="outline"
                   size="sm"
                   onClick={switchToSupportedNetwork}
-                  className="text-orange-600 border-orange-600 hover:bg-orange-50"
+                  className="text-orange-400 border-orange-400 hover:bg-orange-500/10"
                 >
                   <Network className="h-4 w-4 mr-2" />
                   Switch Network
@@ -253,16 +253,16 @@ export default function CreateNGOPage() {
 
         {/* Ready Status Banner */}
         {isOnSupportedNetwork && isConnected && isAuthenticated && (
-          <div className="bg-green-50 border-b border-green-200">
+          <div className="bg-green-500/10 border-b border-green-500/30">
             <div className="container-wide py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <CheckCircle className="h-5 w-5 text-green-400" />
                   <div>
-                    <p className="text-sm font-medium text-green-900">
+                    <p className="text-sm font-medium text-green-200">
                       Ready for NGO Registration
                     </p>
-                    <p className="text-xs text-green-700">
+                    <p className="text-xs text-green-300">
                       Connected to Base Sepolia • Contract: {contracts.NGORegistry?.slice(0, 10)}...{contracts.NGORegistry?.slice(-6)}
                     </p>
                   </div>
@@ -273,7 +273,7 @@ export default function CreateNGOPage() {
                     size="sm"
                     onClick={handleTestRegistration}
                     disabled={isTestingRegistration || isRegisteringNGO}
-                    className="text-green-600 border-green-600 hover:bg-green-50"
+                    className="text-green-400 border-green-400 hover:bg-green-500/10"
                   >
                     <Zap className="h-4 w-4 mr-2" />
                     {isTestingRegistration || isRegisteringNGO ? 'Testing...' : 'Test Registration'}
@@ -282,7 +282,7 @@ export default function CreateNGOPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowDebugInfo(!showDebugInfo)}
-                    className="text-gray-600"
+                    className="text-muted-foreground"
                   >
                     Debug
                   </Button>
@@ -294,22 +294,22 @@ export default function CreateNGOPage() {
 
         {/* Debug Info Panel */}
         {showDebugInfo && (
-          <div className="bg-gray-100 border-b">
+          <div className="bg-muted/50 border-b">
             <div className="container-wide py-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Debug Information</CardTitle>
+                  <CardTitle className="text-lg text-foreground">Debug Information</CardTitle>
                   <CardDescription>Network and contract status for NGO registration</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
+                    <div className="text-muted-foreground">
                       <p><strong>Chain ID:</strong> {chainId}</p>
                       <p><strong>Network:</strong> {supportedNetworkName}</p>
                       <p><strong>Wallet:</strong> {address || 'Not connected'}</p>
                       <p><strong>Authenticated:</strong> {isAuthenticated ? 'Yes' : 'No'}</p>
                     </div>
-                    <div>
+                    <div className="text-muted-foreground">
                       <p><strong>NGO Registry:</strong> {contracts.NGORegistry || 'Not available'}</p>
                       <p><strong>Network Valid:</strong> {isOnSupportedNetwork ? 'Yes' : 'No'}</p>
                       <p><strong>TX Hash:</strong> {ngoTxHash || 'None'}</p>
@@ -326,12 +326,12 @@ export default function CreateNGOPage() {
         <div className="container-wide py-8">
           <div className="max-w-4xl mx-auto">
             {/* Info Banner */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">
+            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-8">
               <div className="flex items-start gap-3">
-                <Heart className="h-5 w-5 text-green-600 mt-0.5" />
+                <Heart className="h-5 w-5 text-green-400 mt-0.5" />
                 <div>
-                  <h3 className="font-medium text-green-900">Creating an NGO Project</h3>
-                  <p className="text-sm text-green-700 mt-1">
+                  <h3 className="font-medium text-green-200">Creating an NGO Project</h3>
+                  <p className="text-sm text-green-300 mt-1">
                     Your NGO will be registered on the blockchain for transparent and verifiable operations. 
                     Once registered, you can receive donations and track impact metrics on-chain. 
                     Make sure to provide complete and accurate information.
@@ -344,12 +344,12 @@ export default function CreateNGOPage() {
                         // This would trigger the ProjectCreationForm to populate with template data
                         toast.info('Template data loaded! Scroll down to see the form.');
                       }}
-                      className="text-green-600 border-green-600 hover:bg-green-50"
+                      className="text-green-400 border-green-400 hover:bg-green-500/10"
                     >
                       <FileText className="h-4 w-4 mr-2" />
                       Use Template
                     </Button>
-                    <span className="text-xs text-green-600">Quick start with sample NGO data</span>
+                    <span className="text-xs text-green-400">Quick start with sample NGO data</span>
                   </div>
                 </div>
               </div>
@@ -360,43 +360,43 @@ export default function CreateNGOPage() {
               projectType="ngo"
               onSuccess={handleSuccess}
               onCancel={handleCancel}
-              className="bg-white shadow-sm"
+              className="bg-card shadow-sm"
             />
           </div>
         </div>
 
         {/* Help Section */}
-        <div className="bg-white border-t border-gray-200 mt-12">
+        <div className="bg-card border-t border-border mt-12">
           <div className="container-wide py-8">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+              <h2 className="text-xl font-semibold text-foreground mb-6 text-center">
                 Why Register Your NGO on Blockchain?
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <Heart className="h-6 w-6 text-blue-600" />
+                  <div className="h-12 w-12 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <Heart className="h-6 w-6 text-blue-400" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-2">Impact Focused</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-medium text-foreground mb-2">Impact Focused</h3>
+                  <p className="text-sm text-muted-foreground">
                     Track and verify your social impact metrics on-chain. Show donors exactly how their contributions make a difference.
                   </p>
                 </div>
                 <div className="text-center">
-                  <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <Building2 className="h-6 w-6 text-purple-600" />
+                  <div className="h-12 w-12 bg-purple-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <Building2 className="h-6 w-6 text-purple-400" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-2">Transparent</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-medium text-foreground mb-2">Transparent</h3>
+                  <p className="text-sm text-muted-foreground">
                     All donations and fund usage are recorded on blockchain, providing complete transparency to your supporters.
                   </p>
                 </div>
                 <div className="text-center">
-                  <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <CheckCircle className="h-6 w-6 text-green-600" />
+                  <div className="h-12 w-12 bg-green-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <CheckCircle className="h-6 w-6 text-green-400" />
                   </div>
-                  <h3 className="font-medium text-gray-900 mb-2">Verified</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-medium text-foreground mb-2">Verified</h3>
+                  <p className="text-sm text-muted-foreground">
                     Blockchain verification builds trust with donors and ensures your NGO meets platform standards.
                   </p>
                 </div>

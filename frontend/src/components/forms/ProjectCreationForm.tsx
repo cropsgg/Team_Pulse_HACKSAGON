@@ -804,11 +804,12 @@ export function ProjectCreationForm({
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
             <div className="relative">
               {/* Debug Panel */}
-              <div className="mb-4 p-3 bg-gray-100 rounded text-xs text-gray-600">
-                <strong>Form Debug Info:</strong> Step {currentStep + 1}/{steps.length} | 
-                Authenticated: {isAuthenticated.toString()} | 
-                Network: {supportedNetworkName} | 
-                Submitting: {isSubmitting.toString()}
+              <div className="mb-4 p-3 bg-muted/50 rounded text-xs text-muted-foreground">
+                <strong>Debug Form State:</strong>
+                <br />Valid: {isValid ? 'Yes' : 'No'}
+                <br />Dirty: {isDirty ? 'Yes' : 'No'}
+                <br />Errors: {Object.keys(errors).length}
+                <br />Values: {JSON.stringify(watchedValues, null, 2).slice(0, 200)}...
               </div>
             </div>
 
@@ -841,7 +842,7 @@ export function ProjectCreationForm({
                     {errors.shortDescription && (
                       <p className="text-sm text-red-500">{errors.shortDescription.message}</p>
                     )}
-                    <p className="text-sm text-gray-500 ml-auto">
+                    <p className="text-sm text-muted-foreground ml-auto">
                       {watchedValues.shortDescription?.length || 0}/200
                     </p>
                   </div>
@@ -860,7 +861,7 @@ export function ProjectCreationForm({
                     {errors.description && (
                       <p className="text-sm text-red-500">{errors.description.message}</p>
                     )}
-                    <p className="text-sm text-gray-500 ml-auto">
+                    <p className="text-sm text-muted-foreground ml-auto">
                       {watchedValues.description?.length || 0}/5000
                     </p>
                   </div>
@@ -1014,7 +1015,7 @@ export function ProjectCreationForm({
                     {...register('minimumDonation', { valueAsNumber: true })}
                     placeholder="1"
                   />
-                  <p className="text-sm text-gray-500 mt-1">Leave empty for no minimum</p>
+                  <p className="text-sm text-muted-foreground mt-1">Leave empty for no minimum</p>
                 </div>
 
                 <div className="space-y-4">
@@ -1085,7 +1086,7 @@ export function ProjectCreationForm({
                         type="date"
                         {...register('endDate')}
                       />
-                      <p className="text-sm text-gray-500 mt-1">Leave empty for ongoing projects</p>
+                      <p className="text-sm text-muted-foreground mt-1">Leave empty for ongoing projects</p>
                     </div>
                   </div>
                 </div>
@@ -1105,7 +1106,7 @@ export function ProjectCreationForm({
 
                     <div>
                       <Label>UN Sustainable Development Goals</Label>
-                      <p className="text-sm text-gray-500 mb-2">Select relevant SDGs (optional)</p>
+                      <p className="text-sm text-muted-foreground mb-2">Select relevant SDGs (optional)</p>
                       <Controller
                         name="sdgGoals"
                         control={control}
@@ -1248,7 +1249,7 @@ export function ProjectCreationForm({
                     <ImageIcon className="h-4 w-4" />
                     Project Images
                   </h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Upload images that showcase your project. These will be displayed on your project page.
                   </p>
                   
@@ -1265,7 +1266,7 @@ export function ProjectCreationForm({
                       <p className="text-sm">
                         {isImageDragActive ? 'Drop images here' : 'Drop images here or click to browse'}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 10MB each (max 5 images)</p>
+                      <p className="text-xs text-muted-foreground mt-1">PNG, JPG, GIF up to 10MB each (max 5 images)</p>
                     </div>
                   </div>
 
@@ -1321,7 +1322,7 @@ export function ProjectCreationForm({
                   {uploadedDocuments.length > 0 && (
                     <div className="space-y-2">
                       {uploadedDocuments.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                        <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded">
                           <div className="flex items-center gap-2">
                             <FileText className="h-4 w-4 text-gray-500" />
                             <span className="text-sm">{file.name}</span>
